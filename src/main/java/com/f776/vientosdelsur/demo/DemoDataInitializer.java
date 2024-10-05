@@ -1,0 +1,158 @@
+package com.f776.vientosdelsur.demo;
+
+import com.f776.vientosdelsur.api.employee.Employee;
+import com.f776.vientosdelsur.api.employee.EmployeeRepository;
+import com.f776.vientosdelsur.api.employee.occupation.Occupation;
+import com.f776.vientosdelsur.api.guest.Guest;
+import com.f776.vientosdelsur.api.guest.GuestRepository;
+import com.f776.vientosdelsur.api.room.Room;
+import com.f776.vientosdelsur.api.room.RoomRepository;
+import com.f776.vientosdelsur.api.room.booking.RoomBooking;
+import com.f776.vientosdelsur.api.room.booking.RoomBookingRepository;
+import com.f776.vientosdelsur.api.user.Role;
+import com.f776.vientosdelsur.api.user.User;
+import com.f776.vientosdelsur.api.user.UserRepository;
+import com.f776.vientosdelsur.api.work.history.WorkDayHistory;
+import com.f776.vientosdelsur.api.work.history.WorkDayHistoryRepository;
+import com.f776.vientosdelsur.api.work.history.housekeeper.HousekeeperWorkHistory;
+import com.f776.vientosdelsur.api.work.history.housekeeper.HousekeeperWorkHistoryRepository;
+import com.f776.vientosdelsur.api.work.shift.ShiftDetails;
+import com.f776.vientosdelsur.api.work.shift.ShiftDetailsRepository;
+import com.f776.vientosdelsur.utils.Utils;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Random;
+
+@Component
+@RequiredArgsConstructor
+@Transactional
+@Order(4)
+public class DemoDataInitializer implements ApplicationListener<ApplicationReadyEvent> {
+
+    private final PasswordEncoder passwordEncoder;
+    private final EmployeeRepository employeeRepository;
+    private final UserRepository userRepository;
+    private final GuestRepository guestRepository;
+    private final RoomRepository roomRepository;
+    private final RoomBookingRepository roomBookingRepository;
+    private final ShiftDetailsRepository shiftDetailsRepository;
+    private final WorkDayHistoryRepository workDayHistoryRepository;
+    private final HousekeeperWorkHistoryRepository housekeeperWorkHistoryRepository;
+
+    /*
+     * This class initializes tables that in production would contain dynamic data.
+     * Other "...Initializer" classes take care of populating tables that will always contain the
+     * same data.
+     */
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent event) {
+        addSampleUsersIfNotExists();
+        addSampleGuestsAndBookings();
+        addSampleWorkDayHistoriesAndHousekeeperWorkHistories();
+    }
+
+    private void addSampleUsersIfNotExists() {
+
+        Role[] roles = Role.values();
+        Occupation[] occupations = Occupation.values();
+
+        Random seed = new Random();
+        for (Role role : roles) {
+            for (int j = 0; j < 5; j++) {
+                String defaultEmail = "user" + seed.nextInt(100, 999) + "@email.com";
+
+                if (userRepository.existsByEmail(defaultEmail)) {
+                    continue;
+                }
+
+                Employee employee = Employee
+                        .builder()
+                        .dayOff(DayOfWeek.of(seed.nextInt(1, 8)))
+                        .phoneNumber(String.valueOf(seed.nextInt(100000000, 999999999)))
+                        .firstName("john" + seed.nextInt(100, 999))
+                        .lastName("doe" + seed.nextInt(100, 999))
+                        .occupation(Utils.pickRandom(List.of(occupations)))
+                        .entryDate(LocalDate.now())
+                        .build();
+                employeeRepository.save(employee);
+
+                User user = User
+                        .builder()
+                        .email(defaultEmail)
+                        .password(passwordEncoder.encode("123456"))
+                        .role(role)
+                        .employee(employee)
+                        .build();
+
+                userRepository.save(user);
+            }
+        }
+    }
+
+    private void addSampleGuestsAndBookings() {
+        Random seed = new Random();
+        List<Room> rooms = roomRepository.findAll();
+
+        for (int i = 0; i < 10; i++) {
+            String email = "guest" + seed.nextInt(100, 999) + "@example.com";
+
+            Guest guest = Guest
+                    .builder()
+                    .firstName("GuestFirstName" + seed.nextInt(100, 999))
+                    .lastName("GuestLastName" + seed.nextInt(100, 999))
+                    .email(email)
+                    .build();
+            guestRepository.save(guest);
+
+            LocalDate startDate = LocalDate.now().minusDays(seed.nextInt(30));
+            LocalDate endDate = startDate.plusDays(seed.nextInt(1, 10));
+
+            RoomBooking booking = RoomBooking
+                    .builder()
+                    .guest(guest)
+                    .room(Utils.pickRandom(rooms))
+                    .startDate(startDate)
+                    .endDate(endDate)
+                    .build();
+            roomBookingRepository.save(booking);
+        }
+    }
+
+    private void addSampleWorkDayHistoriesAndHousekeeperWorkHistories() {
+        Random seed = new Random();
+        List<Employee> employees = employeeRepository.findAll();
+        List<ShiftDetails> shifts = shiftDetailsRepository.findAll();
+        List<Room> rooms = roomRepository.findAll();
+
+        for (int i = 0; i < 10; i++) {
+            LocalDate date = LocalDate.now().minusDays(seed.nextInt(30));
+
+            Employee employee = Utils.pickRandom(employees);
+            WorkDayHistory workDayHistory = WorkDayHistory
+                    .builder()
+                    .date(date)
+                    .employee(employee)
+                    .shiftDetails(Utils.pickRandom(shifts))
+                    .build();
+            workDayHistoryRepository.save(workDayHistory);
+
+            if (employee.getOccupation() == Occupation.MUCAMA) {
+                HousekeeperWorkHistory housekeeperWorkHistory = HousekeeperWorkHistory
+                        .builder()
+                        .workDayHistory(workDayHistory)
+                        .rooms(Utils.pickRandomRange(rooms))
+                        .build();
+                housekeeperWorkHistoryRepository.save(housekeeperWorkHistory);
+            }
+        }
+    }
+}

@@ -1,5 +1,6 @@
 package com.f776.vientosdelsur.api.user;
 
+import com.f776.vientosdelsur.api.employee.Employee;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

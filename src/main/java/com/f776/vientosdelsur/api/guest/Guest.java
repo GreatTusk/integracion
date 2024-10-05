@@ -1,22 +1,22 @@
-package com.f776.vientosdelsur.api.user;
+package com.f776.vientosdelsur.api.guest;
 
+import com.f776.vientosdelsur.api.room.booking.RoomBooking;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Employee {
+public class Guest {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -24,13 +24,10 @@ public class Employee {
     private String firstName;
     @NotNull
     private String lastName;
+    @Email
     @NotNull
-    @Size(min = 9, max = 9)
-    private String phoneNumber;
-    private DayOfWeek dayOff;
-    @NotNull
-    private LocalDate entryDate;
+    private String email;
 
-    @OneToOne(mappedBy = "employee")
-    private User user;
+    @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RoomBooking> roomBooking;
 }

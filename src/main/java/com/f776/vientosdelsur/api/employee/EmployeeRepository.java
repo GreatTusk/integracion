@@ -1,4 +1,4 @@
-package com.f776.vientosdelsur.api.user;
+package com.f776.vientosdelsur.api.employee;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

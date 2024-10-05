@@ -1,6 +1,9 @@
 package com.f776.vientosdelsur.api.auth;
 
-import com.f776.vientosdelsur.api.user.*;
+import com.f776.vientosdelsur.api.employee.Employee;
+import com.f776.vientosdelsur.api.employee.EmployeeRepository;
+import com.f776.vientosdelsur.api.user.User;
+import com.f776.vientosdelsur.api.user.UserRepository;
 import com.f776.vientosdelsur.config.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
