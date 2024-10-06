@@ -1,6 +1,9 @@
 package com.f776.vientosdelsur.api.auth;
 
+import com.f776.vientosdelsur.api.employee.occupation.Occupation;
 import com.f776.vientosdelsur.api.user.Role;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -31,4 +34,7 @@ public class RegisterRequest {
     private DayOfWeek dayOff;
     @NotNull
     private LocalDate entryDate;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private Occupation occupation;
 }

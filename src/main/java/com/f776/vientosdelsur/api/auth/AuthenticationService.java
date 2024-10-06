@@ -26,6 +26,7 @@ public class AuthenticationService {
     public AuthenticationResponse register(RegisterRequest request) {
         Employee employee = Employee
                 .builder()
+                .occupation(request.getOccupation())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .dayOff(request.getDayOff())

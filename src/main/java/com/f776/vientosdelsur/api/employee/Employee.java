@@ -1,6 +1,9 @@
 package com.f776.vientosdelsur.api.employee;
 
+import com.f776.vientosdelsur.api.employee.attendance.EmployeeAttendance;
+import com.f776.vientosdelsur.api.employee.availability.EmployeeAvailability;
 import com.f776.vientosdelsur.api.employee.occupation.Occupation;
+import com.f776.vientosdelsur.api.employee.occupation.housekeeper.Housekeeper;
 import com.f776.vientosdelsur.api.user.User;
 import com.f776.vientosdelsur.api.work.history.WorkDayHistory;
 import jakarta.persistence.*;
@@ -34,13 +37,21 @@ public class Employee {
     private DayOfWeek dayOff;
     @NotNull
     private LocalDate entryDate;
-
     @Enumerated(EnumType.STRING)
     @NotNull
     private Occupation occupation;
 
     @OneToOne(mappedBy = "employee")
     private User user;
+
+    @OneToOne(mappedBy = "employee")
+    private Housekeeper housekeeper;
+
+    @OneToMany(mappedBy = "employee")
+    private List<EmployeeAvailability> employeeAvailability;
+
+    @OneToMany(mappedBy = "employee")
+    private List<EmployeeAttendance> employeeAttendance;
 
     @OneToMany(mappedBy = "employee")
     private List<WorkDayHistory> workDayHistory;

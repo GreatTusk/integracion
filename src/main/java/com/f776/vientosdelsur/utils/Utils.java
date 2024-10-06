@@ -23,4 +23,8 @@ public class Utils {
         int toIndex = fromIndex + SEED.nextInt(collection.size() - fromIndex);
         return collection.subList(fromIndex, toIndex);
     }
+
+    public static String capitalize(String message) {
+        return message.substring(0, 1).toUpperCase() + message.substring(1);
+    }
 }

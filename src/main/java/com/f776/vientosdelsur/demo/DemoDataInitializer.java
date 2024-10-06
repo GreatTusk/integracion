@@ -2,7 +2,15 @@ package com.f776.vientosdelsur.demo;
 
 import com.f776.vientosdelsur.api.employee.Employee;
 import com.f776.vientosdelsur.api.employee.EmployeeRepository;
+import com.f776.vientosdelsur.api.employee.attendance.EmployeeAttendance;
+import com.f776.vientosdelsur.api.employee.attendance.EmployeeAttendanceRepository;
+import com.f776.vientosdelsur.api.employee.availability.AvailabilityStatus;
+import com.f776.vientosdelsur.api.employee.availability.EmployeeAvailability;
+import com.f776.vientosdelsur.api.employee.availability.EmployeeAvailabilityRepository;
 import com.f776.vientosdelsur.api.employee.occupation.Occupation;
+import com.f776.vientosdelsur.api.employee.occupation.housekeeper.Housekeeper;
+import com.f776.vientosdelsur.api.employee.occupation.housekeeper.HousekeeperOccupation;
+import com.f776.vientosdelsur.api.employee.occupation.housekeeper.HousekeeperRepository;
 import com.f776.vientosdelsur.api.guest.Guest;
 import com.f776.vientosdelsur.api.guest.GuestRepository;
 import com.f776.vientosdelsur.api.room.Room;
@@ -29,6 +37,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Random;
 
@@ -40,6 +49,7 @@ public class DemoDataInitializer implements ApplicationListener<ApplicationReady
 
     private final PasswordEncoder passwordEncoder;
     private final EmployeeRepository employeeRepository;
+    private final HousekeeperRepository housekeeperRepository;
     private final UserRepository userRepository;
     private final GuestRepository guestRepository;
     private final RoomRepository roomRepository;
@@ -47,6 +57,8 @@ public class DemoDataInitializer implements ApplicationListener<ApplicationReady
     private final ShiftDetailsRepository shiftDetailsRepository;
     private final WorkDayHistoryRepository workDayHistoryRepository;
     private final HousekeeperWorkHistoryRepository housekeeperWorkHistoryRepository;
+    private final EmployeeAvailabilityRepository employeeAvailabilityRepository;
+    private final EmployeeAttendanceRepository employeeAttendanceRepository;
 
     /*
      * This class initializes tables that in production would contain dynamic data.
@@ -74,21 +86,50 @@ public class DemoDataInitializer implements ApplicationListener<ApplicationReady
                     continue;
                 }
 
+                Occupation occupation = Utils.pickRandom(List.of(occupations));
                 Employee employee = Employee
                         .builder()
                         .dayOff(DayOfWeek.of(seed.nextInt(1, 8)))
                         .phoneNumber(String.valueOf(seed.nextInt(100000000, 999999999)))
                         .firstName("john" + seed.nextInt(100, 999))
                         .lastName("doe" + seed.nextInt(100, 999))
-                        .occupation(Utils.pickRandom(List.of(occupations)))
+                        .occupation(occupation)
                         .entryDate(LocalDate.now())
                         .build();
                 employeeRepository.save(employee);
 
+                LocalDate startDate = LocalDate.now().minusDays(seed.nextInt(30));
+                LocalDate endDate = startDate.plusDays(seed.nextInt(1, 10));
+                EmployeeAvailability employeeAvailability = EmployeeAvailability
+                        .builder()
+                        .employee(employee)
+                        .availabilityStatus(Utils.pickRandom(List.of(AvailabilityStatus.values())))
+                        .startDate(startDate)
+                        .endDate(endDate)
+                        .build();
+                employeeAvailabilityRepository.save(employeeAvailability);
+
+                EmployeeAttendance employeeAttendance = EmployeeAttendance
+                        .builder()
+                        .employee(employee)
+                        .date(startDate)
+                        .clockInTime(LocalTime.of(seed.nextInt(6, 11), seed.nextInt(0, 60)))
+                        .build();
+                employeeAttendanceRepository.save(employeeAttendance);
+
+                if (employee.getOccupation() == Occupation.MUCAMA) {
+                    Housekeeper housekeeper = Housekeeper
+                            .builder()
+                            .employee(employee)
+                            .housekeeperOccupation(Utils.pickRandom(List.of(HousekeeperOccupation.values())))
+                            .build();
+                    housekeeperRepository.save(housekeeper);
+                }
+
                 User user = User
                         .builder()
                         .email(defaultEmail)
-                        .password(passwordEncoder.encode("123456"))
+                        .password(passwordEncoder.encode("Contrasena." + seed.nextInt(100, 999)))
                         .role(role)
                         .employee(employee)
                         .build();
