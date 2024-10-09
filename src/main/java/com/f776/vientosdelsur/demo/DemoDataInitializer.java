@@ -68,14 +68,14 @@ public class DemoDataInitializer implements ApplicationListener<ApplicationReady
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         addSampleUsersIfNotExists();
-        addSampleGuestsAndBookings();
-        addSampleWorkDayHistoriesAndHousekeeperWorkHistories();
     }
 
     private void addSampleUsersIfNotExists() {
 
         Role[] roles = Role.values();
         Occupation[] occupations = Occupation.values();
+        List<Room> rooms = roomRepository.findAll();
+        List<ShiftDetails> shifts = shiftDetailsRepository.findAll();
 
         Random seed = new Random();
         for (Role role : roles) {
@@ -104,8 +104,7 @@ public class DemoDataInitializer implements ApplicationListener<ApplicationReady
                         .builder()
                         .employee(employee)
                         .availabilityStatus(Utils.pickRandom(List.of(AvailabilityStatus.values())))
-                        .startDate(startDate)
-                        .endDate(endDate)
+                        .date(startDate)
                         .build();
                 employeeAvailabilityRepository.save(employeeAvailability);
 
@@ -114,6 +113,7 @@ public class DemoDataInitializer implements ApplicationListener<ApplicationReady
                         .employee(employee)
                         .date(startDate)
                         .clockInTime(LocalTime.of(seed.nextInt(6, 11), seed.nextInt(0, 60)))
+                        .clockOutTime(LocalTime.of(seed.nextInt(15, 18), seed.nextInt(0, 60)))
                         .build();
                 employeeAttendanceRepository.save(employeeAttendance);
 
@@ -135,65 +135,54 @@ public class DemoDataInitializer implements ApplicationListener<ApplicationReady
                         .build();
 
                 userRepository.save(user);
+
+                addSampleGuestsAndBookings(rooms, startDate, endDate);
+                addSampleWorkDayHistoriesAndHousekeeperWorkHistories(startDate, employee, shifts, rooms);
             }
         }
     }
 
-    private void addSampleGuestsAndBookings() {
+    private void addSampleGuestsAndBookings(List<Room> rooms, LocalDate startDate, LocalDate endDate) {
         Random seed = new Random();
-        List<Room> rooms = roomRepository.findAll();
 
-        for (int i = 0; i < 10; i++) {
-            String email = "guest" + seed.nextInt(100, 999) + "@example.com";
+        String email = "guest" + seed.nextInt(100, 999) + "@example.com";
 
-            Guest guest = Guest
-                    .builder()
-                    .firstName("GuestFirstName" + seed.nextInt(100, 999))
-                    .lastName("GuestLastName" + seed.nextInt(100, 999))
-                    .email(email)
-                    .build();
-            guestRepository.save(guest);
+        Guest guest = Guest
+                .builder()
+                .firstName("GuestFirstName" + seed.nextInt(100, 999))
+                .lastName("GuestLastName" + seed.nextInt(100, 999))
+                .email(email)
+                .build();
+        guestRepository.save(guest);
 
-            LocalDate startDate = LocalDate.now().minusDays(seed.nextInt(30));
-            LocalDate endDate = startDate.plusDays(seed.nextInt(1, 10));
+        RoomBooking booking = RoomBooking
+                .builder()
+                .guest(guest)
+                .room(Utils.pickRandom(rooms))
+                .startDate(startDate)
+                .endDate(endDate)
+                .build();
+        roomBookingRepository.save(booking);
 
-            RoomBooking booking = RoomBooking
-                    .builder()
-                    .guest(guest)
-                    .room(Utils.pickRandom(rooms))
-                    .startDate(startDate)
-                    .endDate(endDate)
-                    .build();
-            roomBookingRepository.save(booking);
-        }
     }
 
-    private void addSampleWorkDayHistoriesAndHousekeeperWorkHistories() {
-        Random seed = new Random();
-        List<Employee> employees = employeeRepository.findAll();
-        List<ShiftDetails> shifts = shiftDetailsRepository.findAll();
-        List<Room> rooms = roomRepository.findAll();
+    private void addSampleWorkDayHistoriesAndHousekeeperWorkHistories(LocalDate date, Employee employee, List<ShiftDetails> shifts, List<Room> rooms) {
+        WorkDayHistory workDayHistory = WorkDayHistory
+                .builder()
+                .date(date)
+                .employee(employee)
+                .shiftDetails(Utils.pickRandom(shifts))
+                .build();
+        workDayHistoryRepository.save(workDayHistory);
 
-        for (int i = 0; i < 10; i++) {
-            LocalDate date = LocalDate.now().minusDays(seed.nextInt(30));
-
-            Employee employee = Utils.pickRandom(employees);
-            WorkDayHistory workDayHistory = WorkDayHistory
+        if (employee.getOccupation() == Occupation.MUCAMA) {
+            HousekeeperWorkHistory housekeeperWorkHistory = HousekeeperWorkHistory
                     .builder()
-                    .date(date)
-                    .employee(employee)
-                    .shiftDetails(Utils.pickRandom(shifts))
+                    .workDayHistory(workDayHistory)
+                    .rooms(Utils.pickRandomRange(rooms))
                     .build();
-            workDayHistoryRepository.save(workDayHistory);
-
-            if (employee.getOccupation() == Occupation.MUCAMA) {
-                HousekeeperWorkHistory housekeeperWorkHistory = HousekeeperWorkHistory
-                        .builder()
-                        .workDayHistory(workDayHistory)
-                        .rooms(Utils.pickRandomRange(rooms))
-                        .build();
-                housekeeperWorkHistoryRepository.save(housekeeperWorkHistory);
-            }
+            housekeeperWorkHistoryRepository.save(housekeeperWorkHistory);
         }
+
     }
 }

@@ -26,12 +26,9 @@ public class EmployeeAvailability {
     private Employee employee;
 
     @NotNull
-    private LocalDate startDate;
-    @NotNull
-    private LocalDate endDate;
+    private LocalDate date;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     private AvailabilityStatus availabilityStatus;
-
 }

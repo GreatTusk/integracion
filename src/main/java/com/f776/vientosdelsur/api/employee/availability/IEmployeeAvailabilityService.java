@@ -4,9 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface IEmployeeAvailabilityService {
-    AvailabilityStatus getAvailabilityToday(Long employeeId);
-    AvailabilityStatus getAvailabilityOn(Long employeeId, LocalDate date);
-    List<EmployeeAvailability> getAllAvailabilityRange(LocalDate startDate, LocalDate endDate);
-    List<EmployeeAvailability> getAvailabilityRange(Long employeeId, LocalDate startDate, LocalDate endDate);
+    EmployeeAvailabilityDTO getAvailabilityOn(Long employeeId, LocalDate date);
+    List<List<EmployeeAvailabilityDTO>> getAvailabilityRange(LocalDate startDate, LocalDate endDate);
+    List<EmployeeAvailabilityDTO> getAvailabilityRangeFor(Long employeeId, LocalDate startDate, LocalDate endDate);
 
 }

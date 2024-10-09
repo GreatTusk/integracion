@@ -1,7 +1,5 @@
 package com.f776.vientosdelsur.api.work.history.housekeeper;
 
-import com.f776.vientosdelsur.api.employee.Employee;
-import com.f776.vientosdelsur.api.employee.occupation.Occupation;
 import com.f776.vientosdelsur.api.room.Room;
 import com.f776.vientosdelsur.api.work.history.WorkDayHistory;
 import jakarta.persistence.*;
