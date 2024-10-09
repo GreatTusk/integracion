@@ -13,8 +13,12 @@ public class EmployeeService implements IEmployeeService {
     private final EmployeeMapper employeeMapper;
 
     @Override
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+    public List<EmployeeDTO> getAllEmployees() {
+        return employeeRepository
+        .findAll()
+        .stream()
+        .map(employeeMapper)
+        .toList();
     }
 
     @Override

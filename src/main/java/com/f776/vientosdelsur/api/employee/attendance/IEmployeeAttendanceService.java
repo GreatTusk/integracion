@@ -6,7 +6,6 @@ import java.util.Optional;
 
 public interface IEmployeeAttendanceService {
     Optional<EmployeeAttendanceDTO> getEmployeeAttendanceOn(Long employeeId, LocalDate date);
-    Optional<EmployeeAttendanceDTO> getEmployeeAttendanceToday(Long employeeId);
     List<EmployeeAttendanceDTO> getEmployeeAttendanceRange(Long employeeId, LocalDate startDate, LocalDate endDate);
     List<EmployeeAttendanceDTO> getEmployeesAttendanceRange(LocalDate startDate, LocalDate endDate);
 }

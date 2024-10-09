@@ -40,12 +40,6 @@ public class EmployeeAttendanceService implements IEmployeeAttendanceService {
     }
 
     @Override
-    public Optional<EmployeeAttendanceDTO> getEmployeeAttendanceToday(Long employeeId) {
-        return getEmployeeAttendanceOn(employeeId, LocalDate.now());
-    }
-
-
-    @Override
     public List<EmployeeAttendanceDTO> getEmployeesAttendanceRange(LocalDate startDate, LocalDate endDate) {
         return employeeAttendanceRepository
                 .findAllByDateGreaterThanEqualAndDateLessThanEqual(startDate, endDate)

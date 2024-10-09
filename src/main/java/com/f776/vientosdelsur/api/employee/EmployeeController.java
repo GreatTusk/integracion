@@ -5,6 +5,7 @@ import com.f776.vientosdelsur.api.employee.attendance.IEmployeeAttendanceService
 import com.f776.vientosdelsur.api.employee.availability.IEmployeeAvailabilityService;
 import com.f776.vientosdelsur.api.response.ApiResponse;
 import lombok.AllArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,19 @@ public class EmployeeController {
     private final IEmployeeAvailabilityService employeeAvailabilityService;
     private final IEmployeeAttendanceService employeeAttendanceService;
 
+    /* Employee data */
+
+    @GetMapping()
+    public ResponseEntity<ApiResponse> getAllEmployees() {
+        try {
+            return ResponseEntity.ok(new ApiResponse("Found!", employeeService.getAllEmployees()));
+        } catch (EmployeeNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error:", HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
     @GetMapping("/{employeeId}")
     public ResponseEntity<ApiResponse> getEmployeeById(@PathVariable Long employeeId) {
         try {
@@ -33,6 +47,7 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error:", HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
+
 
     /* Attendance */
 
@@ -59,7 +74,7 @@ public class EmployeeController {
     @GetMapping("/{employeeId}/attendance/today")
     public ResponseEntity<ApiResponse> getEmployeeAttendanceToday(@PathVariable Long employeeId) {
         try {
-            Optional<EmployeeAttendanceDTO> employeeAttendanceToday = employeeAttendanceService.getEmployeeAttendanceToday(employeeId);
+            Optional<EmployeeAttendanceDTO> employeeAttendanceToday = employeeAttendanceService.getEmployeeAttendanceOn(employeeId, LocalDate.now());
 
             if (employeeAttendanceToday.isPresent()) {
                 return ResponseEntity.ok(new ApiResponse("Found!", employeeAttendanceToday));
@@ -152,7 +167,7 @@ public class EmployeeController {
         } catch (EmployeeNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error:", e.getStackTrace()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error:", HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 }
