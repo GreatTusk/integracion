@@ -10,8 +10,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.LongStream;
 
 @Service
 @AllArgsConstructor
@@ -27,29 +25,23 @@ public class EmployeeAvailabilityService implements IEmployeeAvailabilityService
             throw new EmployeeNotFoundException("Employee with id " + employeeId + " not found");
         }
 
-        Optional<EmployeeAvailability> availability = employeeAvailabilityRepository.findByEmployee_IdAndDate(employeeId, date);
-
-        if (availability.isPresent()) {
-            return employeeAvailabilityMapper.apply(availability.get());
-        }
-
-        return EmployeeAvailabilityDTO
-                .builder()
-                .id(employeeId)
-                .employeeURI("/api/v1/employees/" + employeeId)
-                .availabilityStatus(AvailabilityStatus.AVAILABLE)
-                .date(date)
-                .build();
+        return employeeAvailabilityRepository.findByEmployee_IdAndDate(employeeId, date)
+                .map(employeeAvailabilityMapper)
+                .orElse(EmployeeAvailabilityDTO
+                        .builder()
+                        .id(employeeId)
+                        .employeeURI("/api/v1/employees/" + employeeId)
+                        .availabilityStatus(AvailabilityStatus.AVAILABLE)
+                        .date(date)
+                        .build());
     }
 
     @Override
     public List<List<EmployeeAvailabilityDTO>> getAvailabilityRange(LocalDate startDate, LocalDate endDate) {
-        LongStream employeeIds = employeeRepository
+        return employeeRepository
                 .findAll()
                 .stream()
-                .mapToLong(Employee::getId);
-
-        return employeeIds
+                .mapToLong(Employee::getId)
                 .mapToObj(id -> getAvailabilityRangeFor(id, startDate, endDate))
                 .toList();
     }
@@ -60,7 +52,7 @@ public class EmployeeAvailabilityService implements IEmployeeAvailabilityService
             throw new EmployeeNotFoundException("Employee with id " + employeeId + " not found");
         }
 
-        long rangeLength = ChronoUnit.DAYS.between(startDate, endDate) + 1;
+        final long rangeLength = ChronoUnit.DAYS.between(startDate, endDate) + 1;
 
         List<EmployeeAvailabilityDTO> employeeAvailability = new ArrayList<>(employeeAvailabilityRepository
                 .findByEmployee_IdAndDateBetween(employeeId, startDate, endDate)
@@ -68,18 +60,18 @@ public class EmployeeAvailabilityService implements IEmployeeAvailabilityService
                 .map(employeeAvailabilityMapper)
                 .toList());
 
-        // There is an entry for each day
+        // There is an entry for each day -- early return
         if (rangeLength == employeeAvailability.size()) {
             return employeeAvailability;
         }
 
-        List<LocalDate> existingDates = employeeAvailability
+        final List<LocalDate> existingDates = employeeAvailability
                 .stream()
                 .map(EmployeeAvailabilityDTO::date)
                 .toList();
 
-        String employeeURI = "/api/v1/employees/" + employeeId;
-
+        final String employeeURI = "/api/v1/employees/" + employeeId;
+        // Could possibly optimize in the future -- not needed now
         LocalDate currentDate = startDate;
         while (!currentDate.isAfter(endDate)) {
             if (!existingDates.contains(currentDate)) {

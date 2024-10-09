@@ -23,8 +23,9 @@ public class EmployeeAttendanceService implements IEmployeeAttendanceService {
             throw new EmployeeNotFoundException("Employee with id " + employeeId + " not found");
         }
 
-        Optional<EmployeeAttendance> employeeAttendance = employeeAttendanceRepository.getEmployeeAttendanceByEmployee_IdAndDate(employeeId, date);
-        return employeeAttendance.map(employeeAttendanceMapper);
+        return employeeAttendanceRepository
+                .getEmployeeAttendanceByEmployee_IdAndDate(employeeId, date)
+                .map(employeeAttendanceMapper);
     }
 
     @Override

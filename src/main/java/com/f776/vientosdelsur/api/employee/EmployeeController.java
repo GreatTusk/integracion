@@ -5,7 +5,6 @@ import com.f776.vientosdelsur.api.employee.attendance.IEmployeeAttendanceService
 import com.f776.vientosdelsur.api.employee.availability.IEmployeeAvailabilityService;
 import com.f776.vientosdelsur.api.response.ApiResponse;
 import lombok.AllArgsConstructor;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +46,6 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error:", HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
-
 
     /* Attendance */
 
