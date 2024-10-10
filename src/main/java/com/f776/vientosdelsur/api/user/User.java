@@ -1,6 +1,7 @@
 package com.f776.vientosdelsur.api.user;
 
 import com.f776.vientosdelsur.api.employee.Employee;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -34,7 +35,8 @@ public class User implements UserDetails {
     @NotNull
     private Role role;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @NotNull
     private Employee employee;
 

@@ -17,7 +17,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${spring.secret-key}")
+    @Value("${spring.keys.jwt-secret-key}")
     private String secretKey;
 
     public String extractUserEmail(String token) {

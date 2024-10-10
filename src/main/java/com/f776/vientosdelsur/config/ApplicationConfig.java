@@ -21,7 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 @EnableWebSecurity
 @EnableMethodSecurity
-public class ApplicationConfig implements WebMvcConfigurer {
+public class  ApplicationConfig implements WebMvcConfigurer {
 
     private final UserRepository userRepository;
 

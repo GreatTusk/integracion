@@ -1,11 +1,13 @@
 spring:
+  profiles:
+    active: dev
   application:
     name: vientos-del-sur
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/vientosdelsur
-    username: postgres
-    password: password
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     open-in-view: false
     show-sql: true
@@ -14,5 +16,12 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: create
-  secret-key: 662fefa079873dc3ae445b5e90541ad9dd030281648f08c36cfa68b841e30272
-#  api-endpoint: /api/v1
+  sql:
+    init:
+      mode: never
+      continue-on-error: false
+      schema-locations: classpath:/sql/schema.sql
+      data-locations: classpath:sql/data.sql
+  keys:
+    jwt-secret-key: ${JWT_SECRET_KEY}
+    open-weather-api-key: ${OPEN_WEATHER_API_KEY}
