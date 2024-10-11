@@ -15,7 +15,7 @@ public interface WorkDayHistoryRepository extends JpaRepository<WorkDayHistory, 
     List<WorkDayHistory> findAllByDate(@NotNull LocalDate date);
 
     @Query("""
-            SELECT WorkDayHistory
+            SELECT wdh
             FROM WorkDayHistory wdh
             WHERE wdh.employee.id = :employeeId AND
             wdh.date between :startDate and :endDate

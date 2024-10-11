@@ -22,11 +22,11 @@ public class HousekeeperWorkDay {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "work_day_history_id")
     private WorkDayHistory workDayHistory;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "housekeeper_work_history_rooms",
             joinColumns = @JoinColumn(name = "housekeeper_work_history_id"),

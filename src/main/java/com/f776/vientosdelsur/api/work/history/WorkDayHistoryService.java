@@ -18,7 +18,22 @@ public class WorkDayHistoryService implements IWorkDayHistoryService {
     private final WorkDayHistoryMapper workDayHistoryMapper;
 
     @Override
-    public WorkDayHistoryDTO getWorkDayByEmployeeOn(Long employeeId, LocalDate date) {
+    public List<WorkDayHistoryDTO> getAllEmployeeWorkDays() throws NoContentException {
+        List<WorkDayHistoryDTO> workDayHistoryDTOS = workDayHistoryRepository
+                .findAll()
+                .stream()
+                .map(workDayHistoryMapper)
+                .toList();
+
+        if (workDayHistoryDTOS.isEmpty()) {
+            throw new NoContentException("No work is planned");
+        }
+
+        return workDayHistoryDTOS;
+    }
+
+    @Override
+    public WorkDayHistoryDTO getWorkDayByEmployeeOn(Long employeeId, LocalDate date) throws EmployeeNotFoundException, NoContentException {
 
         if (!employeeRepository.existsById(employeeId)) {
             throw new EmployeeNotFoundException("Employee with id " + employeeId + " not found");
@@ -29,7 +44,7 @@ public class WorkDayHistoryService implements IWorkDayHistoryService {
     }
 
     @Override
-    public List<WorkDayHistoryDTO> getAllEmployeesWorkDayOn(LocalDate date) {
+    public List<WorkDayHistoryDTO> getAllEmployeesWorkDayOn(LocalDate date) throws NoContentException {
         List<WorkDayHistoryDTO> workDayHistoryDTOS = workDayHistoryRepository.findAllByDate(date)
                 .stream()
                 .map(workDayHistoryMapper)
@@ -43,7 +58,13 @@ public class WorkDayHistoryService implements IWorkDayHistoryService {
     }
 
     @Override
-    public List<WorkDayHistoryDTO> getAllWorkDaysByEmployeeOnRange(Long employeeId, LocalDate startDate, LocalDate endDate) {
+    public List<WorkDayHistoryDTO> getAllWorkDaysByEmployeeOnRange(Long employeeId, LocalDate startDate, LocalDate endDate)
+            throws EmployeeNotFoundException, NoContentException {
+
+        if (!employeeRepository.existsById(employeeId)) {
+            throw new EmployeeNotFoundException("Employee with id " + employeeId + " not found");
+        }
+
         List<WorkDayHistoryDTO> workDayHistoryDTOS = workDayHistoryRepository.findAllByEmployeeIdOnRange(employeeId, startDate, endDate)
                 .stream()
                 .map(workDayHistoryMapper)

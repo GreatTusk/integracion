@@ -1,23 +1,24 @@
 package com.f776.vientosdelsur.api.room;
 
-import com.f776.vientosdelsur.api.room.booking.RoomBooking;
-import com.f776.vientosdelsur.api.room.booking.RoomBookingRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class RoomService {
+public class RoomService implements IRoomService {
 
-    private final RoomBookingRepository roomBookingRepository;
+    private final RoomRepository roomRepository;
 
-    public List<RoomBooking> getCurrentBookings(Room room) {
-        LocalDate today = LocalDate.now();
-        return roomBookingRepository
-                .findByRoomAndStartDateLessThanEqualAndEndDateGreaterThanEqual(room, today, today);
+    @Override
+    public List<Room> getAllRoomsInfo() {
+        return roomRepository.findAll();
     }
 
+    @Override
+    public Room getRoomInfo(Integer roomId) {
+        return roomRepository.findById(roomId)
+                .orElseThrow();
+    }
 }

@@ -21,6 +21,21 @@ public class HousekeeperWorkDayService implements IHousekeeperWorkDayService {
     private final HousekeeperWorkDayMapper housekeeperWorkDayMapper;
 
     @Override
+    public List<HousekeeperWorkDayDTO> getAllHousekeeperWorkDays() throws NoContentException {
+        List<HousekeeperWorkDayDTO> workDayDTOS = housekeeperWorkDayRepository
+                .findAll()
+                .stream()
+                .map(housekeeperWorkDayMapper)
+                .toList();
+
+        if (workDayDTOS.isEmpty()) {
+            throw new NoContentException("No housekeeping work is planned");
+        }
+
+        return workDayDTOS;
+    }
+
+    @Override
     public HousekeeperWorkDayDTO getHousekeeperWorkDayOn(Long employeeId, LocalDate date)
             throws EmployeeNotFoundException, WrongOccupationException, NoContentException {
 
@@ -38,22 +53,16 @@ public class HousekeeperWorkDayService implements IHousekeeperWorkDayService {
 
     @Override
     public List<HousekeeperWorkDayDTO> getHousekeepersWorkDayOn(LocalDate date) throws NoContentException {
-
-        List<Long> housekeeperIds = employeeRepository
-                .findAll()
-                .stream()
-                .filter(employee -> employee.getOccupation() == Occupation.MUCAMA)
-                .map(Employee::getId)
-                .toList();
-
-        if (housekeeperIds.isEmpty()) {
-            throw new NoContentException("No work is planned for " + date.toString());
-        }
-
-        return housekeeperWorkDayRepository.findAllByHousekeeperIds(housekeeperIds)
+        List<HousekeeperWorkDayDTO> housekeepers = housekeeperWorkDayRepository.findAllHousekeepersWorkingOn(date)
                 .stream()
                 .map(housekeeperWorkDayMapper)
                 .toList();
+
+        if (housekeepers.isEmpty()) {
+            throw new NoContentException("No housekeeping work is planned for " + date.toString());
+        }
+
+        return housekeepers;
     }
 
     @Override

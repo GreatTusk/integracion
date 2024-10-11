@@ -2,6 +2,7 @@ package com.f776.vientosdelsur.api.room;
 
 import com.f776.vientosdelsur.api.room.booking.RoomBooking;
 import com.f776.vientosdelsur.api.room.type.RoomTypeDetails;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -31,6 +32,7 @@ public class Room {
     private RoomTypeDetails roomTypeDetails;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<RoomBooking> roomBooking;
 
 }

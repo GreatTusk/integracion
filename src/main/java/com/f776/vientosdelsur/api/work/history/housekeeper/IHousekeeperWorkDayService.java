@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface IHousekeeperWorkDayService {
+    List<HousekeeperWorkDayDTO> getAllHousekeeperWorkDays() throws NoContentException;
+
     HousekeeperWorkDayDTO getHousekeeperWorkDayOn(Long employeeId, LocalDate date)
             throws EmployeeNotFoundException, WrongOccupationException, NoContentException;
 

@@ -28,6 +28,9 @@ public class RoomInitializer implements ApplicationListener<ApplicationReadyEven
 
     private void init() {
         final int TOTAL_ROOMS = 28;
+        if (roomRepository.count() == 28) {
+            return;
+        }
         List<Room> rooms = new ArrayList<>(TOTAL_ROOMS);
 
         rooms.add(Room

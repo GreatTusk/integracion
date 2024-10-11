@@ -1,6 +1,5 @@
 package com.f776.vientosdelsur.api.work.history.housekeeper;
 
-import aj.org.objectweb.asm.commons.Remapper;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,14 +15,15 @@ public interface HousekeeperWorkDayRepository extends JpaRepository<HousekeeperW
                                                                                         @NotNull LocalDate date);
 
     @Query("""
-            SELECT HousekeeperWorkDay
+            SELECT hwd
             from HousekeeperWorkDay hwd
-            where hwd.workDayHistory.employee.id IN (:housekeeperIds)
+            where hwd.workDayHistory.employee.occupation = 'MUCAMA' AND
+            hwd.workDayHistory.date = :date
             """)
-    List<HousekeeperWorkDay> findAllByHousekeeperIds(@Param("housekeeperIds") List<Long> housekeeperIds);
+    List<HousekeeperWorkDay> findAllHousekeepersWorkingOn(@Param("date") @NotNull LocalDate date);
 
     @Query("""
-            SELECT HousekeeperWorkDay
+            SELECT hwd
             FROM HousekeeperWorkDay hwd
             WHERE hwd.workDayHistory.employee.id = :employeeId
             AND hwd.workDayHistory.date BETWEEN :startDate AND :endDate
