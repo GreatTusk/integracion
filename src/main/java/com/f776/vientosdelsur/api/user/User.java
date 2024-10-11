@@ -27,6 +27,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Email
+    @Column(unique = true)
     @NotNull
     private String email;
     @NotNull
@@ -59,7 +60,6 @@ public class User implements UserDetails {
     public boolean isAccountNonExpired() {
         return true;
     }
-
     @Override
     public boolean isAccountNonLocked() {
         return true;

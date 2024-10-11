@@ -13,6 +13,6 @@ public record EmployeeDTO(
         String phoneNumber,
         String dayOff,
         LocalDate entryDate,
-        Occupation occupation
+        String occupation
 ) {
 }

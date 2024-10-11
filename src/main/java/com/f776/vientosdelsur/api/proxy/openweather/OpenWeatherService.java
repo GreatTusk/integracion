@@ -6,7 +6,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
-public class OpenWeatherService {
+public class OpenWeatherService implements IOpenWeatherService {
 
     private final WebClient webClient;
 
@@ -20,6 +20,7 @@ public class OpenWeatherService {
                 .build();
     }
 
+    @Override
     public WeatherResponse getCurrentWeather() {
         final float PUCON_LAT = -39.266667f;
         final float PUCON_LON = -71.966667f;

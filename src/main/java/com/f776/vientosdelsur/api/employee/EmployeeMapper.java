@@ -19,12 +19,12 @@ public class EmployeeMapper implements Function<Employee, EmployeeDTO> {
         return EmployeeDTO
                 .builder()
                 .id(employee.getId())
-                .occupation(employee.getOccupation())
                 .firstName(employee.getFirstName())
                 .lastName(employee.getLastName())
                 .phoneNumber(employee.getPhoneNumber())
                 .entryDate(employee.getEntryDate())
                 .dayOff(Utils.capitalize(day))
+                .occupation(Utils.initCap(employee.getOccupation().toString().replace('_', ' ')))
                 .build();
     }
 }

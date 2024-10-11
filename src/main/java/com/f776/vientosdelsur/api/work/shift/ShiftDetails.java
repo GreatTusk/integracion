@@ -1,6 +1,7 @@
 package com.f776.vientosdelsur.api.work.shift;
 
 import com.f776.vientosdelsur.api.work.history.WorkDayHistory;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,7 @@ public class ShiftDetails {
     @NotNull
     private LocalTime endTime;
 
-    @OneToMany(mappedBy = "shiftDetails", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @OneToMany(mappedBy = "shiftDetails", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<WorkDayHistory> workDayHistory;
 }

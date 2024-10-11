@@ -22,8 +22,8 @@ import com.f776.vientosdelsur.api.user.User;
 import com.f776.vientosdelsur.api.user.UserRepository;
 import com.f776.vientosdelsur.api.work.history.WorkDayHistory;
 import com.f776.vientosdelsur.api.work.history.WorkDayHistoryRepository;
-import com.f776.vientosdelsur.api.work.history.housekeeper.HousekeeperWorkHistory;
-import com.f776.vientosdelsur.api.work.history.housekeeper.HousekeeperWorkHistoryRepository;
+import com.f776.vientosdelsur.api.work.history.housekeeper.HousekeeperWorkDay;
+import com.f776.vientosdelsur.api.work.history.housekeeper.HousekeeperWorkDayRepository;
 import com.f776.vientosdelsur.api.work.shift.ShiftDetails;
 import com.f776.vientosdelsur.api.work.shift.ShiftDetailsRepository;
 import com.f776.vientosdelsur.utils.Utils;
@@ -56,7 +56,7 @@ public class DemoDataInitializer implements ApplicationListener<ApplicationReady
     private final RoomBookingRepository roomBookingRepository;
     private final ShiftDetailsRepository shiftDetailsRepository;
     private final WorkDayHistoryRepository workDayHistoryRepository;
-    private final HousekeeperWorkHistoryRepository housekeeperWorkHistoryRepository;
+    private final HousekeeperWorkDayRepository housekeeperWorkDayRepository;
     private final EmployeeAvailabilityRepository employeeAvailabilityRepository;
     private final EmployeeAttendanceRepository employeeAttendanceRepository;
 
@@ -176,12 +176,12 @@ public class DemoDataInitializer implements ApplicationListener<ApplicationReady
         workDayHistoryRepository.save(workDayHistory);
 
         if (employee.getOccupation() == Occupation.MUCAMA) {
-            HousekeeperWorkHistory housekeeperWorkHistory = HousekeeperWorkHistory
+            HousekeeperWorkDay housekeeperWorkDay = HousekeeperWorkDay
                     .builder()
                     .workDayHistory(workDayHistory)
                     .rooms(Utils.pickRandomRange(rooms))
                     .build();
-            housekeeperWorkHistoryRepository.save(housekeeperWorkHistory);
+            housekeeperWorkDayRepository.save(housekeeperWorkDay);
         }
 
     }

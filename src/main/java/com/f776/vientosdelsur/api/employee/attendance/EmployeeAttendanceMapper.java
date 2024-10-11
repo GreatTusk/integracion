@@ -24,7 +24,7 @@ public class EmployeeAttendanceMapper implements Function<EmployeeAttendance, Em
         String employeeURI = "/api/v1/employees/" + employee.getId();
 
         Optional<WorkDayHistory> workDay = workDayHistoryRepository
-                .findByEmployeeAndDate(employee, employeeAttendance.getDate());
+                .findByEmployee_IdAndDate(employee.getId(), employeeAttendance.getDate());
 
         return workDay
                 .map(workDayHistory -> EmployeeAttendanceDTO
