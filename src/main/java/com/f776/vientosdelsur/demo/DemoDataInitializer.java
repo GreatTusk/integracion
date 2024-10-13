@@ -86,6 +86,14 @@ public class DemoDataInitializer implements ApplicationListener<ApplicationReady
                     continue;
                 }
 
+                User user = User
+                        .builder()
+                        .email(defaultEmail)
+                        .password(passwordEncoder.encode("Contrasena." + seed.nextInt(100, 999)))
+                        .role(role)
+                        .isEnabled(true)
+                        .build();
+
                 Occupation occupation = Utils.pickRandom(List.of(occupations));
                 Employee employee = Employee
                         .builder()
@@ -94,6 +102,7 @@ public class DemoDataInitializer implements ApplicationListener<ApplicationReady
                         .firstName("john" + seed.nextInt(100, 999))
                         .lastName("doe" + seed.nextInt(100, 999))
                         .occupation(occupation)
+                        .user(user)
                         .entryDate(LocalDate.now())
                         .build();
                 employeeRepository.save(employee);
@@ -126,13 +135,6 @@ public class DemoDataInitializer implements ApplicationListener<ApplicationReady
                     housekeeperRepository.save(housekeeper);
                 }
 
-                User user = User
-                        .builder()
-                        .email(defaultEmail)
-                        .password(passwordEncoder.encode("Contrasena." + seed.nextInt(100, 999)))
-                        .role(role)
-                        .employee(employee)
-                        .build();
 
                 userRepository.save(user);
 

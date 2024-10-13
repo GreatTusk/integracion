@@ -1,9 +1,12 @@
 package com.f776.vientosdelsur.api.auth;
 
+import com.f776.vientosdelsur.api.email.IEmailService;
 import com.f776.vientosdelsur.api.employee.Employee;
 import com.f776.vientosdelsur.api.employee.EmployeeRepository;
 import com.f776.vientosdelsur.api.user.User;
 import com.f776.vientosdelsur.api.user.UserRepository;
+import com.f776.vientosdelsur.api.user.verification.AccountVerification;
+import com.f776.vientosdelsur.api.user.verification.AccountVerificationRepository;
 import com.f776.vientosdelsur.config.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +21,8 @@ import java.util.Map;
 public class AuthenticationService {
 
     private final UserRepository userRepository;
+    private final AccountVerificationRepository accountVerificationRepository;
+    private final IEmailService emailService;
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -42,8 +47,15 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
+                .isEnabled(false)
                 .build();
         userRepository.save(user);
+
+        AccountVerification accountVerification = new AccountVerification(user);
+        accountVerificationRepository.save(accountVerification);
+
+        // TODO: send email
+        emailService.sendVerificationEmail(request.getFirstName(), request.getEmail(), accountVerification.getVerificationToken());
 
         String jwtToken = jwtService.generateToken(Map.of("role", request.getRole()), user);
         return AuthenticationResponse

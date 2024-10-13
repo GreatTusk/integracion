@@ -51,7 +51,7 @@ public class  ApplicationConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
+        registry.addMapping("/api/v1/**")
                 .allowedOrigins(
                         // Android - local dev env
                         "http://localhost", "https://localhost",

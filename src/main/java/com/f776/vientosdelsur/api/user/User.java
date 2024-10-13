@@ -1,6 +1,7 @@
 package com.f776.vientosdelsur.api.user;
 
 import com.f776.vientosdelsur.api.employee.Employee;
+import com.f776.vientosdelsur.api.user.verification.AccountVerification;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -36,10 +37,15 @@ public class User implements UserDetails {
     @NotNull
     private Role role;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    private Boolean isEnabled;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
-    @NotNull
     private Employee employee;
+
+    @OneToOne(mappedBy = "user")
+    @JsonIgnore
+    private AccountVerification accountVerification;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -60,6 +66,7 @@ public class User implements UserDetails {
     public boolean isAccountNonExpired() {
         return true;
     }
+
     @Override
     public boolean isAccountNonLocked() {
         return true;
@@ -72,7 +79,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnabled;
     }
-
 }

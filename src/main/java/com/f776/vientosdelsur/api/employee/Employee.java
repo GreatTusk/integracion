@@ -41,7 +41,9 @@ public class Employee {
     @NotNull
     private Occupation occupation;
 
-    @OneToOne(mappedBy = "employee")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @NotNull
     private User user;
 
     @OneToOne(mappedBy = "employee")

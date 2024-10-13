@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verificado - Vientos del Sur</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --vientos-50: #f5f7f2;
+            --vientos-100: #e6ebd9;
+            --vientos-200: #cdd8b3;
+            --vientos-300: #b3c48d;
+            --vientos-400: #99b167;
+            --vientos-500: #818C58;
+            --vientos-600: #6a7346;
+            --vientos-700: #535a35;
+            --vientos-800: #3c4223;
+            --vientos-900: #252911;
+            --vientos-950: #131409;
+
+            --background: var(--vientos-50);
+            --foreground: var(--vientos-800);
+            --card-background: white;
+            --card-foreground: var(--vientos-800);
+            --primary: var(--vientos-500);
+            --primary-foreground: white;
+            --secondary: var(--vientos-100);
+            --secondary-foreground: var(--vientos-800);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: var(--vientos-950);
+                --foreground: var(--vientos-100);
+                --card-background: var(--vientos-900);
+                --card-foreground: var(--vientos-100);
+                --primary: var(--vientos-400);
+                --primary-foreground: var(--vientos-950);
+                --secondary: var(--vientos-800);
+                --secondary-foreground: var(--vientos-100);
+            }
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: var(--card-background);
+            color: var(--card-foreground);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .icon {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .user-info {
+            background-color: var(--secondary);
+            color: var(--secondary-foreground);
+            border-radius: 4px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .user-info p {
+            margin: 0.5rem 0;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="icon">
+        <i data-lucide="wind" style="width: 64px; height: 64px;"></i>
+    </div>
+    <h1>¡Email Verificado!</h1>
+    <p>Gracias por verificar tu dirección de correo electrónico en Vientos del Sur. Tu cuenta ha sido activada
+        exitosamente.</p>
+    <div class="user-info">
+        <p><strong>Nombre:</strong> <span th:text="${nombre}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${email}"></span></p>
+    </div>
+</div>
+<script>
+    lucide.createIcons();
+</script>
+</body>
+</html>

@@ -22,6 +22,26 @@ spring:
       continue-on-error: false
       schema-locations: classpath:/sql/schema.sql
       data-locations: classpath:sql/data.sql
+  mail:
+    host: ${EMAIL_HOST}
+    port: ${EMAIL_PORT}
+    username: ${EMAIL_ID}
+    password: ${EMAIL_PASSWORD}
+    default-encoding: UTF-8
+    properties:
+      mail:
+        mime:
+          chartset: UTF
+        smtp:
+          writetimeout: 10000
+          connectiontimeout: 10000
+          timeout: 10000
+          auth: true
+          starttls:
+            enable: true
+            required: true
+  verify:
+    host: ${VERIFY_EMAIL_HOST}
   keys:
     jwt-secret-key: ${JWT_SECRET_KEY}
     open-weather-api-key: ${OPEN_WEATHER_API_KEY}
