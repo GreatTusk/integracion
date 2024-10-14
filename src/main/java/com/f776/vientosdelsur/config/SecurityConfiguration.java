@@ -1,8 +1,11 @@
 package com.f776.vientosdelsur.config;
 
+import com.f776.vientosdelsur.api.auth.IAuthenticationService;
+import com.f776.vientosdelsur.config.login.LoginFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,19 +19,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthEntryPoint authenticationEntryPoint;
+    private final IAuthenticationService authService;
+    private final IJwtService jwtService;
 
-    /**
-     * Configures the security filter chain for the application.
-     *
-     * @param http the HttpSecurity object to configure
-     * @return the configured SecurityFilterChain
-     * @throws Exception if an error occurs during configuration
-     */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint))
@@ -42,7 +39,7 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new LoginFilter(authenticationManager, authService, jwtService), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

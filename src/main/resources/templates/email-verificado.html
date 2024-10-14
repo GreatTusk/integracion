@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email Verificado - Vientos del Sur</title>
-    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
             --vientos-50: #f5f7f2;
@@ -82,7 +81,7 @@
             margin-bottom: 1rem;
         }
 
-        .user-info {
+        .userDetails-info {
             background-color: var(--secondary);
             color: var(--secondary-foreground);
             border-radius: 4px;
@@ -90,7 +89,7 @@
             margin-top: 1.5rem;
         }
 
-        .user-info p {
+        .userDetails-info p {
             margin: 0.5rem 0;
             font-size: 1rem;
         }
@@ -99,18 +98,15 @@
 <body>
 <div class="container">
     <div class="icon">
-        <i data-lucide="wind" style="width: 64px; height: 64px;"></i>
+        <img src="/img/logo.png" alt="Logo" style="width: 64px; height: 64px;">
     </div>
     <h1>¡Email Verificado!</h1>
     <p>Gracias por verificar tu dirección de correo electrónico en Vientos del Sur. Tu cuenta ha sido activada
         exitosamente.</p>
-    <div class="user-info">
+    <div class="userDetails-info">
         <p><strong>Nombre:</strong> <span th:text="${nombre}"></span></p>
         <p><strong>Email:</strong> <span th:text="${email}"></span></p>
     </div>
 </div>
-<script>
-    lucide.createIcons();
-</script>
 </body>
 </html>

@@ -3,17 +3,16 @@ package com.f776.vientosdelsur.api.user;
 import com.f776.vientosdelsur.api.employee.Employee;
 import com.f776.vientosdelsur.api.user.verification.AccountVerification;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,10 +36,16 @@ public class User implements UserDetails {
     @NotNull
     private Role role;
 
-    private Boolean isEnabled;
+    private Boolean enabled;
+    private Boolean accountNonLocked;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonIgnore
+    private Integer loginAttempts;
+    private LocalDateTime lastLogin;
+
+    // Parent
+    @OneToOne(mappedBy = "user")
+    @JsonManagedReference
+    @ToString.Exclude
     private Employee employee;
 
     @OneToOne(mappedBy = "user")
@@ -69,7 +74,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return accountNonLocked;
     }
 
     @Override
@@ -79,6 +84,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return isEnabled;
+        return enabled;
     }
 }

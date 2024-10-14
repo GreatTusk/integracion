@@ -2,7 +2,6 @@ package com.f776.vientosdelsur.api.work.history.housekeeper;
 
 import com.f776.vientosdelsur.api.room.Room;
 import com.f776.vientosdelsur.api.work.history.WorkDayHistory;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -3,32 +3,46 @@ package com.f776.vientosdelsur.api.auth;
 import com.f776.vientosdelsur.api.email.IEmailService;
 import com.f776.vientosdelsur.api.employee.Employee;
 import com.f776.vientosdelsur.api.employee.EmployeeRepository;
+import com.f776.vientosdelsur.api.response.NoContentException;
 import com.f776.vientosdelsur.api.user.User;
 import com.f776.vientosdelsur.api.user.UserRepository;
 import com.f776.vientosdelsur.api.user.verification.AccountVerification;
 import com.f776.vientosdelsur.api.user.verification.AccountVerificationRepository;
+import com.f776.vientosdelsur.cache.CacheStore;
 import com.f776.vientosdelsur.config.JwtService;
+import com.f776.vientosdelsur.config.login.LoginType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthenticationService implements IAuthenticationService {
 
+    public static final int MAX_LOGIN_ATTEMPTS = 5;
     private final UserRepository userRepository;
     private final AccountVerificationRepository accountVerificationRepository;
     private final IEmailService emailService;
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
+    private final CacheStore<String, Integer> userCache;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    @Override
+    public void register(RegisterRequest request) {
+
+        User user = User
+                .builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(request.getRole())
+                .enabled(false)
+                .accountNonLocked(true)
+                .loginAttempts(0)
+                .build();
+
         Employee employee = Employee
                 .builder()
                 .occupation(request.getOccupation())
@@ -37,45 +51,45 @@ public class AuthenticationService {
                 .dayOff(request.getDayOff())
                 .phoneNumber(request.getPhoneNumber())
                 .entryDate(request.getEntryDate())
+                .user(user)
                 .build();
 
         employeeRepository.save(employee);
 
-        User user = User
-                .builder()
-                .employee(employee)
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
-                .isEnabled(false)
-                .build();
-        userRepository.save(user);
-
         AccountVerification accountVerification = new AccountVerification(user);
         accountVerificationRepository.save(accountVerification);
 
-        // TODO: send email
         emailService.sendVerificationEmail(request.getFirstName(), request.getEmail(), accountVerification.getVerificationToken());
-
-        String jwtToken = jwtService.generateToken(Map.of("role", request.getRole()), user);
-        return AuthenticationResponse
-                .builder()
-                .token(jwtToken)
-                .build();
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    @Override
+    public void updateLoginAttempt(String email, LoginType loginType) {
+        User userDetails = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NoContentException("No user found"));
 
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                request.getEmail(),
-                request.getPassword()
-        ));
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow();
-        String jwtToken = jwtService.generateToken(Map.of("role", user.getRole()), user);
-        return AuthenticationResponse
-                .builder()
-                .token(jwtToken)
-                .build();
+        switch (loginType) {
+            case LOGIN_ATTEMPT -> {
+                if (userCache.get(userDetails.getEmail()) == null) {
+                    userDetails.setLoginAttempts(0);
+                    userDetails.setAccountNonLocked(true);
+                }
+
+                userDetails.setLoginAttempts(userDetails.getLoginAttempts() + 1);
+                userCache.put(userDetails.getEmail(), userDetails.getLoginAttempts());
+
+                if (userCache.get(userDetails.getEmail()) > MAX_LOGIN_ATTEMPTS) {
+                    userDetails.setAccountNonLocked(false);
+                }
+
+            }
+            case LOGIN_SUCCESS -> {
+                userDetails.setAccountNonLocked(true);
+                userDetails.setLoginAttempts(0);
+                userDetails.setLastLogin(LocalDateTime.now());
+                userCache.evict(userDetails.getEmail());
+            }
+        }
+
+        userRepository.save(userDetails);
     }
 }

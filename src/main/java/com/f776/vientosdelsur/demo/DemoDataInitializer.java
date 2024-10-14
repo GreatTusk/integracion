@@ -37,6 +37,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Random;
@@ -86,12 +87,15 @@ public class DemoDataInitializer implements ApplicationListener<ApplicationReady
                     continue;
                 }
 
-                User user = User
+                User userDetails = User
                         .builder()
                         .email(defaultEmail)
                         .password(passwordEncoder.encode("Contrasena." + seed.nextInt(100, 999)))
                         .role(role)
-                        .isEnabled(true)
+                        .enabled(true)
+                        .accountNonLocked(true)
+                        .loginAttempts( seed.nextInt(1, 16))
+                        .lastLogin(LocalDateTime.now())
                         .build();
 
                 Occupation occupation = Utils.pickRandom(List.of(occupations));
@@ -102,7 +106,7 @@ public class DemoDataInitializer implements ApplicationListener<ApplicationReady
                         .firstName("john" + seed.nextInt(100, 999))
                         .lastName("doe" + seed.nextInt(100, 999))
                         .occupation(occupation)
-                        .user(user)
+                        .user(userDetails)
                         .entryDate(LocalDate.now())
                         .build();
                 employeeRepository.save(employee);
@@ -136,7 +140,7 @@ public class DemoDataInitializer implements ApplicationListener<ApplicationReady
                 }
 
 
-                userRepository.save(user);
+                userRepository.save(userDetails);
 
                 addSampleGuestsAndBookings(rooms, startDate, endDate);
                 addSampleWorkDayHistoriesAndHousekeeperWorkHistories(startDate, employee, shifts, rooms);

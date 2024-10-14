@@ -1,6 +1,5 @@
 package com.f776.vientosdelsur.api.employee;
 
-import com.f776.vientosdelsur.api.employee.occupation.Occupation;
 import lombok.Builder;
 
 import java.time.LocalDate;

@@ -1,5 +1,6 @@
 package com.f776.vientosdelsur.api.auth;
 
+import com.f776.vientosdelsur.api.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,12 +18,8 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(authenticationService.register(request));
-    }
-
-    @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody AuthenticationRequest request) {
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+    public ResponseEntity<ApiResponse> register(@Valid @RequestBody RegisterRequest request) {
+        authenticationService.register(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

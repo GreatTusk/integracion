@@ -1,7 +1,9 @@
 package com.f776.vientosdelsur.utils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class Utils {
 
@@ -25,10 +27,27 @@ public class Utils {
     }
 
     public static String capitalize(String message) {
+        if (message.isEmpty()) {
+            return message;
+        } else if (message.length() > 1) {
+            return message.toUpperCase();
+        }
         return message.substring(0, 1).toUpperCase() + message.substring(1);
     }
 
     public static String initCap(String message) {
-        return message.substring(0, 1).toUpperCase() + message.substring(1).toLowerCase();
+        if (message == null || message.isBlank()) {
+            return message;
+        }
+
+        return Arrays.stream(message.trim().split(" "))
+                .map(word -> {
+                    if (word.length() > 1) {
+                        return word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+                    }
+                    return word.toUpperCase();
+                })
+                .collect(Collectors.joining(" "));
+
     }
 }

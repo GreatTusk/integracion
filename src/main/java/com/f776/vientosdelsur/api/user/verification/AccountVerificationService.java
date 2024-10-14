@@ -1,6 +1,7 @@
 package com.f776.vientosdelsur.api.user.verification;
 
 import com.f776.vientosdelsur.api.employee.Employee;
+import com.f776.vientosdelsur.api.response.NoContentException;
 import com.f776.vientosdelsur.api.user.User;
 import com.f776.vientosdelsur.api.user.UserRepository;
 import jakarta.transaction.Transactional;
@@ -21,21 +22,22 @@ public class AccountVerificationService implements IAccountVerificationService {
 
     @Override
     @Transactional
-    public String verifyEmail(String token) {
-        AccountVerification accountVerification = accountVerificationRepository.findByVerificationToken(token)
-                .orElseThrow(() -> new RuntimeException("Token not valid"));
+    public String verifyEmail(String token) throws NoContentException {
+        Context context = new Context();
 
-        User user = accountVerification.getUser();
-        user.setIsEnabled(true);
-        userRepository.save(user);
+        AccountVerification accountVerification = accountVerificationRepository.findByVerificationToken(token)
+                .orElseThrow(() -> new NoContentException(templateEngine.process("404", context)));
+
+        User userDetails = accountVerification.getUser();
+        userDetails.setEnabled(true);
+        userRepository.save(userDetails);
 
         accountVerificationRepository.delete(accountVerification);
 
-        Employee employee = user.getEmployee();
+        Employee employee = userDetails.getEmployee();
 
-        Context context = new Context();
         context.setVariables(Map.of("nombre", employee.getFirstName() + " " + employee.getLastName(),
-                "email", user.getEmail()));
+                "email", userDetails.getEmail()));
 
         return templateEngine.process("email-verificado", context);
     }

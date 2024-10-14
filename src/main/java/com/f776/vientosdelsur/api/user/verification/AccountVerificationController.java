@@ -1,6 +1,8 @@
 package com.f776.vientosdelsur.api.user.verification;
 
+import com.f776.vientosdelsur.api.response.NoContentException;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +18,11 @@ public class AccountVerificationController {
 
     @GetMapping
     public ResponseEntity<String> verifyAccount(@RequestParam String token) {
-        return ResponseEntity.ok(accountVerificationService.verifyEmail(token));
+        try {
+            return ResponseEntity.ok(accountVerificationService.verifyEmail(token));
+        } catch (NoContentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
 }
