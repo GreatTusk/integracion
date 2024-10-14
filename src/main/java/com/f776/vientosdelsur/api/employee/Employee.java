@@ -7,7 +7,6 @@ import com.f776.vientosdelsur.api.employee.occupation.housekeeper.Housekeeper;
 import com.f776.vientosdelsur.api.user.User;
 import com.f776.vientosdelsur.api.work.history.WorkDayHistory;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

@@ -1,7 +1,7 @@
 package com.f776.vientosdelsur.api.user;
 
-import com.f776.vientosdelsur.api.employee.Employee;
 import com.f776.vientosdelsur.api.auth.verification.AccountVerification;
+import com.f776.vientosdelsur.api.employee.Employee;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -17,13 +17,12 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-//@Data
 @Setter
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "vientos_del_user")
+@Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

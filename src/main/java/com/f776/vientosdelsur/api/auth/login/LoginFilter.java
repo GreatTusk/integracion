@@ -1,6 +1,5 @@
 package com.f776.vientosdelsur.api.auth.login;
 
-import com.f776.vientosdelsur.api.auth.registration.IRegistrationService;
 import com.f776.vientosdelsur.api.response.ApiResponse;
 import com.f776.vientosdelsur.api.response.ResponseBuilder;
 import com.f776.vientosdelsur.api.user.User;
@@ -30,14 +29,14 @@ import java.io.IOException;
 public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
     public static final String LOGIN_PATH = "/api/v1/auth/login";
-    private final IRegistrationService authService;
     private final IJwtService jwtService;
+    private final ILoginService loginService;
 
-    public LoginFilter(AuthenticationManager authenticationManager, IRegistrationService authService, IJwtService jwtService) {
+    public LoginFilter(AuthenticationManager authenticationManager, ILoginService loginService, IJwtService jwtService) {
         // Listen to log in attempts on path
         super(new AntPathRequestMatcher(LOGIN_PATH, HttpMethod.POST.name()), authenticationManager);
         this.jwtService = jwtService;
-        this.authService = authService;
+        this.loginService = loginService;
     }
 
     @Override
@@ -46,7 +45,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
             LoginRequest loginRequest = new ObjectMapper()
                     .configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true)
                     .readValue(request.getInputStream(), LoginRequest.class);
-            authService.updateLoginAttempt(loginRequest.getEmail(), LoginType.LOGIN_ATTEMPT);
+            loginService.updateLoginAttempt(loginRequest.getEmail(), LoginType.LOGIN_ATTEMPT);
             log.info("Login attempt for email: {}", loginRequest.getEmail());
 
             return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(
@@ -69,7 +68,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
             var user = (User) authentication.getPrincipal();
             log.info("User authenticated: {}", user.getUsername());
 
-            authService.updateLoginAttempt(user.getUsername(), LoginType.LOGIN_SUCCESS);
+            loginService.updateLoginAttempt(user.getUsername(), LoginType.LOGIN_SUCCESS);
             log.info("Login attempt updated for user: {}", user.getUsername());
 
             ApiResponse apiResponse = new ApiResponse("Successful login", null);

@@ -1,9 +1,9 @@
 package com.f776.vientosdelsur.config;
 
-import com.f776.vientosdelsur.api.auth.registration.IRegistrationService;
+import com.f776.vientosdelsur.api.auth.login.ILoginService;
+import com.f776.vientosdelsur.api.auth.login.LoginFilter;
 import com.f776.vientosdelsur.config.auth.AuthExceptionHandler;
 import com.f776.vientosdelsur.config.auth.AuthRequestFilter;
-import com.f776.vientosdelsur.api.auth.login.LoginFilter;
 import com.f776.vientosdelsur.jwt.IJwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +25,7 @@ public class FilterChainConfig {
     private final AuthenticationProvider authenticationProvider;
     private final AuthRequestFilter authRequestFilter;
     private final AuthExceptionHandler authenticationEntryPoint;
-    private final IRegistrationService authService;
+    private final ILoginService loginService;
     private final IJwtService jwtService;
 
     @Bean
@@ -43,7 +43,7 @@ public class FilterChainConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(new LoginFilter(authenticationManager, authService, jwtService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new LoginFilter(authenticationManager, loginService, jwtService), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(authRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
