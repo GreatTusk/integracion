@@ -28,7 +28,7 @@ public class  ApplicationConfig implements WebMvcConfigurer {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no existe"));
     }
 
     @Bean

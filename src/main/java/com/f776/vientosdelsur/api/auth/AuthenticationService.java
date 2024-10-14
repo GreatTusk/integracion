@@ -27,7 +27,6 @@ public class AuthenticationService implements IAuthenticationService {
     private final IEmailService emailService;
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
     private final CacheStore<String, Integer> userCache;
 
     @Override
@@ -65,7 +64,7 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     public void updateLoginAttempt(String email, LoginType loginType) {
         User userDetails = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NoContentException("No user found"));
+                .orElseThrow(() -> new NoContentException("No se ha podido encontrar la cuenta. Por favor inicie sesión con una cuenta válida."));
 
         switch (loginType) {
             case LOGIN_ATTEMPT -> {

@@ -2,12 +2,10 @@ package com.f776.vientosdelsur.api.response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
@@ -15,20 +13,14 @@ import org.springframework.security.authentication.LockedException;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 @Slf4j
 public class ResponseBuilder {
 
-    private static final BiFunction<Exception, HttpStatus, String> errorMessage = (e, httpStatus) -> {
-        if (httpStatus == HttpStatus.FORBIDDEN) {
-            return "No tiene los permisos suficientes";
-        }
-        if (httpStatus == HttpStatus.UNAUTHORIZED) {
-            return "No ha iniciado sesión";
-        }
+    private static final Function<Exception, String> errorMessage = (e) -> {
         if (e instanceof DisabledException) {
-            return "La cuenta está deshabilitada";
+            return "La cuenta está deshabilitada. Por favor verifique la cuenta en su correo.";
         }
         if (e instanceof LockedException) {
             return "La cuenta está bloqueada";
@@ -40,11 +32,9 @@ public class ResponseBuilder {
             return "Las credenciales han expirado";
         }
         if (e instanceof NoContentException) {
-            return "No se encontró contenido";
+            return e.getMessage();
         }
-        if (httpStatus.is5xxServerError()) {
-            return "Error interno del servidor";
-        }
+
         return "Ocurrió un error. Por favor intente de nuevo.";
     };
 
@@ -58,16 +48,14 @@ public class ResponseBuilder {
         }
     };
 
-    public static void handleErrorResponse(HttpServletRequest request, HttpServletResponse response, Exception e) {
-        if (e instanceof AccessDeniedException) {
-            ApiResponse apiResponse = getErrorResponse(request, response, e, HttpStatus.FORBIDDEN);
-            writeResponse.accept(response, apiResponse);
-        }
+    public static void handleErrorResponse(HttpServletResponse response, Exception e) {
+        ApiResponse apiResponse = getErrorResponse(response, e);
+        writeResponse.accept(response, apiResponse);
     }
 
-    private static ApiResponse getErrorResponse(HttpServletRequest request, HttpServletResponse response, Exception e, HttpStatus httpStatus) {
+    private static ApiResponse getErrorResponse(HttpServletResponse response, Exception e) {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(httpStatus.value());
-        return new ApiResponse(errorMessage.apply(e, httpStatus), Map.of());
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+        return new ApiResponse(errorMessage.apply(e), Map.of());
     }
 }

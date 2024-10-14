@@ -61,7 +61,7 @@ public class EmailService implements IEmailService {
 
             // Images
             BodyPart imageBodyPart = new MimeBodyPart();
-            DataSource dataSource = new FileDataSource("src/main/resources/img/logo.png");
+            DataSource dataSource = new FileDataSource("src/main/resources/static/logo.png");
             imageBodyPart.setDataHandler(new DataHandler(dataSource));
             imageBodyPart.setHeader("Content-ID", "logo");
             mimeMultipart.addBodyPart(imageBodyPart);

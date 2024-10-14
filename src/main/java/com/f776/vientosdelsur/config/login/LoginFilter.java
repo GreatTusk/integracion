@@ -15,8 +15,6 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -58,7 +56,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
             ));
         } catch (Exception e) {
             log.error(e.getMessage());
-            ResponseBuilder.handleErrorResponse(request, response, e);
+            ResponseBuilder.handleErrorResponse(response, e);
             return null;
         }
     }
@@ -67,7 +65,6 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication)
             throws IOException, ServletException {
-//        super.successfulAuthentication(request, response, chain, authentication);
 
         try {
             var user = (User) authentication.getPrincipal();

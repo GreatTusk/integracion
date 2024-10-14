@@ -117,7 +117,6 @@ public class JwtService implements IJwtService {
         }
     };
 
-
     public String extractUserEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
