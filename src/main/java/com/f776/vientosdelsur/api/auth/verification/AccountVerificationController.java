@@ -1,4 +1,4 @@
-package com.f776.vientosdelsur.api.user.verification;
+package com.f776.vientosdelsur.api.auth.verification;
 
 import com.f776.vientosdelsur.api.response.NoContentException;
 import lombok.AllArgsConstructor;

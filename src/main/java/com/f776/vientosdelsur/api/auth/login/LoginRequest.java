@@ -1,4 +1,4 @@
-package com.f776.vientosdelsur.api.auth;
+package com.f776.vientosdelsur.api.auth.login;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

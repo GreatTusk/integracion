@@ -1,9 +1,10 @@
-package com.f776.vientosdelsur.api.user.verification;
+package com.f776.vientosdelsur.api.auth.verification;
 
 import com.f776.vientosdelsur.api.employee.Employee;
 import com.f776.vientosdelsur.api.response.NoContentException;
 import com.f776.vientosdelsur.api.user.User;
 import com.f776.vientosdelsur.api.user.UserRepository;
+import com.f776.vientosdelsur.utils.Utils;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class AccountVerificationService implements IAccountVerificationService {
 
         Employee employee = userDetails.getEmployee();
 
-        context.setVariables(Map.of("nombre", employee.getFirstName() + " " + employee.getLastName(),
+        context.setVariables(Map.of("nombre", Utils.initCap(employee.getFirstName() + " " + employee.getLastName()),
                 "email", userDetails.getEmail()));
 
         return templateEngine.process("email-verificado", context);

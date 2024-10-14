@@ -1,4 +1,4 @@
-package com.f776.vientosdelsur.api.email;
+package com.f776.vientosdelsur.email;
 
 import jakarta.activation.DataHandler;
 import jakarta.activation.DataSource;
@@ -41,9 +41,10 @@ public class EmailService implements IEmailService {
     public void sendVerificationEmail(String name, String to, String token) {
         try {
             Context context = new Context();
-            context.setVariables(Map.of("nombre", name,
-                    "email", to, "urlVerificacion",
-                    host + "/verify?token=" + token));
+            context.setVariables(Map.of(
+                    "nombre", name,
+                    "email", to,
+                    "urlVerificacion", host + "/verify?token=" + token));
 
             String html = templateEngine.process("verificar-email.html", context);
             MimeMessage message = getMimeMessage();

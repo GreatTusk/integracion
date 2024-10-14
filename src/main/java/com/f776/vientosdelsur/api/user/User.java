@@ -1,7 +1,7 @@
 package com.f776.vientosdelsur.api.user;
 
 import com.f776.vientosdelsur.api.employee.Employee;
-import com.f776.vientosdelsur.api.user.verification.AccountVerification;
+import com.f776.vientosdelsur.api.auth.verification.AccountVerification;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;

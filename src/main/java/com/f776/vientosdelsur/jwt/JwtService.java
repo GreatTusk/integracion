@@ -1,6 +1,8 @@
-package com.f776.vientosdelsur.config;
+package com.f776.vientosdelsur.jwt;
 
-import com.f776.vientosdelsur.api.user.User;
+import com.f776.vientosdelsur.jwt.token.Token;
+import com.f776.vientosdelsur.jwt.token.TokenData;
+import com.f776.vientosdelsur.jwt.token.TokenType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.JwtBuilder;
@@ -117,20 +119,7 @@ public class JwtService implements IJwtService {
         }
     };
 
-    public String extractUserEmail(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        return extractAllClaims.andThen(claimsResolver).apply(token);
-    }
-
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String userEmail = extractUserEmail(token);
-        return (userEmail.equals(userDetails.getUsername())) && !isTokenExpired(token);
-    }
-
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -138,6 +127,14 @@ public class JwtService implements IJwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
+    @Override
+    public String extractUserEmail(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        return extractAllClaims.andThen(claimsResolver).apply(token);
+    }
 
     @Override
     public String generateToken(UserDetails userDetails, Function<Token, String> tokenFunc) {
@@ -150,8 +147,8 @@ public class JwtService implements IJwtService {
     }
 
     @Override
-    public Optional<String> extractToken(HttpServletRequest request, String cookieName) {
-        return extractToken.apply(request, cookieName);
+    public Optional<String> extractToken(HttpServletRequest request, TokenType tokenType) {
+        return extractToken.apply(request, tokenType.getValue());
     }
 
     @Override

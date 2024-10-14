@@ -1,4 +1,4 @@
-package com.f776.vientosdelsur.config;
+package com.f776.vientosdelsur.config.auth;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
+public class AuthExceptionHandler implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request,

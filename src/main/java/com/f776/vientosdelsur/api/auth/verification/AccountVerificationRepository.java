@@ -1,4 +1,4 @@
-package com.f776.vientosdelsur.api.user.verification;
+package com.f776.vientosdelsur.api.auth.verification;
 
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;

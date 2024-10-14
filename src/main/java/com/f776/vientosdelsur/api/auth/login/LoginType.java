@@ -1,4 +1,4 @@
-package com.f776.vientosdelsur.config.login;
+package com.f776.vientosdelsur.api.auth.login;
 
 public enum LoginType {
     LOGIN_ATTEMPT,

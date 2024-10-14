@@ -1,4 +1,4 @@
-package com.f776.vientosdelsur.config;
+package com.f776.vientosdelsur.config.auth;
 
 import com.f776.vientosdelsur.api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,14 +14,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
 @EnableMethodSecurity
-public class  ApplicationConfig implements WebMvcConfigurer {
+public class AuthenticationConfig  {
 
     private final UserRepository userRepository;
 
@@ -47,20 +45,5 @@ public class  ApplicationConfig implements WebMvcConfigurer {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/v1/**")
-                .allowedOrigins(
-                        // Android - local dev env
-                        "http://localhost", "https://localhost",
-                        // Local frontend env
-                        "http://localhost:8100", "https://localhost:8100",
-                        // IOS
-                        "capacitor://localhost")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true);
     }
 }

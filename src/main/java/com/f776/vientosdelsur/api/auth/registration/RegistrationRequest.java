@@ -1,4 +1,4 @@
-package com.f776.vientosdelsur.api.auth;
+package com.f776.vientosdelsur.api.auth.registration;
 
 import com.f776.vientosdelsur.api.employee.occupation.Occupation;
 import com.f776.vientosdelsur.api.user.Role;
@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterRequest {
+public class RegistrationRequest {
     @NotBlank
     private String firstName;
     @NotBlank

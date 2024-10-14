@@ -1,12 +1,11 @@
-package com.f776.vientosdelsur.config.login;
+package com.f776.vientosdelsur.api.auth.login;
 
-import com.f776.vientosdelsur.api.auth.IAuthenticationService;
-import com.f776.vientosdelsur.api.auth.LoginRequest;
+import com.f776.vientosdelsur.api.auth.registration.IRegistrationService;
 import com.f776.vientosdelsur.api.response.ApiResponse;
 import com.f776.vientosdelsur.api.response.ResponseBuilder;
 import com.f776.vientosdelsur.api.user.User;
-import com.f776.vientosdelsur.config.IJwtService;
-import com.f776.vientosdelsur.config.TokenType;
+import com.f776.vientosdelsur.jwt.IJwtService;
+import com.f776.vientosdelsur.jwt.token.TokenType;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -31,10 +30,10 @@ import java.io.IOException;
 public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
     public static final String LOGIN_PATH = "/api/v1/auth/login";
-    private final IAuthenticationService authService;
+    private final IRegistrationService authService;
     private final IJwtService jwtService;
 
-    public LoginFilter(AuthenticationManager authenticationManager, IAuthenticationService authService, IJwtService jwtService) {
+    public LoginFilter(AuthenticationManager authenticationManager, IRegistrationService authService, IJwtService jwtService) {
         // Listen to log in attempts on path
         super(new AntPathRequestMatcher(LOGIN_PATH, HttpMethod.POST.name()), authenticationManager);
         this.jwtService = jwtService;
@@ -92,5 +91,12 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
             ObjectMapper mapper = new ObjectMapper();
             mapper.writeValue(response.getOutputStream(), apiResponse);
         }
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                              AuthenticationException failed) throws IOException, ServletException {
+        super.unsuccessfulAuthentication(request, response, failed);
+        log.error("Unsuccessful authentication", failed);
     }
 }

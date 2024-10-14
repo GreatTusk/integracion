@@ -1,4 +1,4 @@
-package com.f776.vientosdelsur.config;
+package com.f776.vientosdelsur.jwt.token;
 
 import io.jsonwebtoken.Claims;
 import lombok.Builder;
