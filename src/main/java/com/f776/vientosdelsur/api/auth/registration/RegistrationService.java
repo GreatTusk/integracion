@@ -9,6 +9,7 @@ import com.f776.vientosdelsur.api.user.User;
 import com.f776.vientosdelsur.api.user.UserRepository;
 import com.f776.vientosdelsur.cache.CacheStore;
 import com.f776.vientosdelsur.email.IEmailService;
+import com.f776.vientosdelsur.utils.Constants;
 import com.f776.vientosdelsur.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -65,6 +66,6 @@ public class RegistrationService implements IRegistrationService {
                 request.getEmail(),
                 accountVerification.getVerificationToken());
 
-        return URI.create("/api/v1/employees/" + employee.getId());
+        return Constants.buildEmployeeURI.apply(employee.getId());
     }
 }

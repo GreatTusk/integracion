@@ -5,6 +5,7 @@ import com.f776.vientosdelsur.api.response.ResponseBuilder;
 import com.f776.vientosdelsur.api.user.User;
 import com.f776.vientosdelsur.jwt.IJwtService;
 import com.f776.vientosdelsur.jwt.token.TokenType;
+import com.f776.vientosdelsur.utils.Constants;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -12,6 +13,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -61,6 +63,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
 
     @Override
+    @Transactional
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication)
             throws IOException, ServletException {
 
@@ -71,7 +74,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
             loginService.updateLoginAttempt(user.getUsername(), LoginType.LOGIN_SUCCESS);
             log.info("Login attempt updated for user: {}", user.getUsername());
 
-            ApiResponse apiResponse = new ApiResponse("Successful login", null);
+            ApiResponse apiResponse = new ApiResponse("Successful login", Constants.buildEmployeeURI.apply(user.getEmployee().getId()));
             jwtService.addCookie(response, user, TokenType.ACCESS);
             jwtService.addCookie(response, user, TokenType.REFRESH);
             log.info("JWT cookies added for user: {}", user.getUsername());

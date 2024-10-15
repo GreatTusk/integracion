@@ -1,8 +1,10 @@
 package com.f776.vientosdelsur.api.employee.availability;
 
 import com.f776.vientosdelsur.api.employee.Employee;
+import com.f776.vientosdelsur.utils.Constants;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
 import java.util.function.Function;
 
 @Service
@@ -13,7 +15,7 @@ public class EmployeeAvailabilityMapper implements Function<EmployeeAvailability
     public EmployeeAvailabilityDTO apply(EmployeeAvailability employeeAvailability) {
 
         Employee employee = employeeAvailability.getEmployee();
-        String employeeURI = "/api/v1/employees/" + employee.getId();
+        URI employeeURI = Constants.buildEmployeeURI.apply(employee.getId());
 
         return EmployeeAvailabilityDTO
                 .builder()

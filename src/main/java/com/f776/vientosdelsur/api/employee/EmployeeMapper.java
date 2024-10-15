@@ -19,8 +19,8 @@ public class EmployeeMapper implements Function<Employee, EmployeeDTO> {
         return EmployeeDTO
                 .builder()
                 .id(employee.getId())
-                .firstName(employee.getFirstName())
-                .lastName(employee.getLastName())
+                .firstName(Utils.capitalize(employee.getFirstName()))
+                .lastName(Utils.capitalize(employee.getLastName()))
                 .phoneNumber(employee.getPhoneNumber())
                 .entryDate(employee.getEntryDate())
                 .dayOff(Utils.capitalize(day))

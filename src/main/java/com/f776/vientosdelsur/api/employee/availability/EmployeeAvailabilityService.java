@@ -3,9 +3,11 @@ package com.f776.vientosdelsur.api.employee.availability;
 import com.f776.vientosdelsur.api.employee.Employee;
 import com.f776.vientosdelsur.api.employee.EmployeeNotFoundException;
 import com.f776.vientosdelsur.api.employee.EmployeeRepository;
+import com.f776.vientosdelsur.utils.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ public class EmployeeAvailabilityService implements IEmployeeAvailabilityService
                 .orElse(EmployeeAvailabilityDTO
                         .builder()
                         .id(employeeId)
-                        .employeeURI("/api/v1/employees/" + employeeId)
+                        .employeeURI(Constants.buildEmployeeURI.apply(employeeId))
                         .availabilityStatus(AvailabilityStatus.AVAILABLE)
                         .date(date)
                         .build());
@@ -70,7 +72,7 @@ public class EmployeeAvailabilityService implements IEmployeeAvailabilityService
                 .map(EmployeeAvailabilityDTO::date)
                 .toList();
 
-        final String employeeURI = "/api/v1/employees/" + employeeId;
+        final URI employeeURI = Constants.buildEmployeeURI.apply(employeeId);
         // Could possibly optimize in the future -- not needed now
         LocalDate currentDate = startDate;
         while (!currentDate.isAfter(endDate)) {

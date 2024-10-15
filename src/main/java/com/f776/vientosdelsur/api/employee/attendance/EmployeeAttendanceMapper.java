@@ -3,9 +3,11 @@ package com.f776.vientosdelsur.api.employee.attendance;
 import com.f776.vientosdelsur.api.employee.Employee;
 import com.f776.vientosdelsur.api.work.history.WorkDayHistory;
 import com.f776.vientosdelsur.api.work.history.WorkDayHistoryRepository;
+import com.f776.vientosdelsur.utils.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
 import java.time.LocalTime;
 import java.util.Optional;
 import java.util.function.Function;
@@ -21,7 +23,7 @@ public class EmployeeAttendanceMapper implements Function<EmployeeAttendance, Em
         // TODO: Extract to constants
         Employee employee = employeeAttendance.getEmployee();
         // Maybe not needed
-        String employeeURI = "/api/v1/employees/" + employee.getId();
+        URI employeeURI = Constants.buildEmployeeURI.apply(employee.getId());
 
         Optional<WorkDayHistory> workDay = workDayHistoryRepository
                 .findByEmployee_IdAndDate(employee.getId(), employeeAttendance.getDate());
