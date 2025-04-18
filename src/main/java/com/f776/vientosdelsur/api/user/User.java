@@ -1,13 +1,23 @@
 package com.f776.vientosdelsur.api.user;
 
 import com.f776.vientosdelsur.api.auth.verification.AccountVerification;
-import com.f776.vientosdelsur.api.employee.Employee;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,10 +54,10 @@ public class User implements UserDetails {
     private LocalDateTime lastLogin;
 
     // Parent
-    @OneToOne(mappedBy = "user")
-    @JsonManagedReference
-    @ToString.Exclude
-    private Employee employee;
+    //    @OneToOne(mappedBy = "user")
+    //    @JsonManagedReference
+    //    @ToString.Exclude
+    //    private Employee employee;
 
     @OneToOne(mappedBy = "user")
     @JsonIgnore

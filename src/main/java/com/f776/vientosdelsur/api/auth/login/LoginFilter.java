@@ -26,6 +26,7 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.io.IOException;
+import java.net.URI;
 
 @Slf4j
 public class LoginFilter extends AbstractAuthenticationProcessingFilter {
@@ -74,7 +75,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
             loginService.updateLoginAttempt(user.getUsername(), LoginType.LOGIN_SUCCESS);
             log.info("Login attempt updated for user: {}", user.getUsername());
 
-            ApiResponse apiResponse = new ApiResponse("Successful login", Constants.buildEmployeeURI.apply(user.getEmployee().getId()));
+            ApiResponse apiResponse = new ApiResponse("Successful login", URI.create(""));
             jwtService.addCookie(response, user, TokenType.ACCESS);
             jwtService.addCookie(response, user, TokenType.REFRESH);
             log.info("JWT cookies added for user: {}", user.getUsername());

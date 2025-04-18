@@ -2,8 +2,6 @@ package com.f776.vientosdelsur.api.auth.registration;
 
 import com.f776.vientosdelsur.api.auth.verification.AccountVerification;
 import com.f776.vientosdelsur.api.auth.verification.AccountVerificationRepository;
-import com.f776.vientosdelsur.api.employee.Employee;
-import com.f776.vientosdelsur.api.employee.EmployeeRepository;
 import com.f776.vientosdelsur.api.response.ResourceAlreadyExistsException;
 import com.f776.vientosdelsur.api.user.User;
 import com.f776.vientosdelsur.api.user.UserRepository;
@@ -26,7 +24,7 @@ public class RegistrationService implements IRegistrationService {
     private final UserRepository userRepository;
     private final AccountVerificationRepository accountVerificationRepository;
     private final IEmailService emailService;
-    private final EmployeeRepository employeeRepository;
+//    private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -46,19 +44,6 @@ public class RegistrationService implements IRegistrationService {
                 .loginAttempts(0)
                 .build();
 
-        Employee employee = Employee
-                .builder()
-                .occupation(request.getOccupation())
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .dayOff(request.getDayOff())
-                .phoneNumber(request.getPhoneNumber())
-                .entryDate(request.getEntryDate())
-                .user(user)
-                .build();
-
-        employeeRepository.save(employee);
-
         AccountVerification accountVerification = new AccountVerification(user);
         accountVerificationRepository.save(accountVerification);
 
@@ -66,6 +51,7 @@ public class RegistrationService implements IRegistrationService {
                 request.getEmail(),
                 accountVerification.getVerificationToken());
 
-        return Constants.buildEmployeeURI.apply(employee.getId());
+        return URI.create("");
+//        return Constants.buildEmployeeURI.apply(employee.getId());
     }
 }

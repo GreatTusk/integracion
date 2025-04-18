@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 @EnableWebSecurity
 @EnableMethodSecurity
-public class AuthenticationConfig  {
+public class AuthenticationConfig {
 
     private final UserRepository userRepository;
 
