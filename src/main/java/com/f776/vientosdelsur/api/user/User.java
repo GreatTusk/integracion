@@ -47,6 +47,10 @@ public class User implements UserDetails {
     @NotNull
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private Department department;
+
     private Boolean enabled;
     private Boolean accountNonLocked;
 
