@@ -1,8 +1,6 @@
 package com.f776.vientosdelsur.api.auth.registration;
 
 import com.f776.vientosdelsur.api.user.Role;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

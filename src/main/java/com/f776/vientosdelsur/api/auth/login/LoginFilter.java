@@ -5,7 +5,6 @@ import com.f776.vientosdelsur.api.response.ResponseBuilder;
 import com.f776.vientosdelsur.api.user.User;
 import com.f776.vientosdelsur.jwt.IJwtService;
 import com.f776.vientosdelsur.jwt.token.TokenType;
-import com.f776.vientosdelsur.utils.Constants;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -26,7 +25,6 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.io.IOException;
-import java.net.URI;
 
 @Slf4j
 public class LoginFilter extends AbstractAuthenticationProcessingFilter {

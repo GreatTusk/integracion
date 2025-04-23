@@ -7,7 +7,6 @@ import com.f776.vientosdelsur.api.user.User;
 import com.f776.vientosdelsur.api.user.UserRepository;
 import com.f776.vientosdelsur.cache.CacheStore;
 import com.f776.vientosdelsur.email.IEmailService;
-import com.f776.vientosdelsur.utils.Constants;
 import com.f776.vientosdelsur.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +23,7 @@ public class RegistrationService implements IRegistrationService {
     private final UserRepository userRepository;
     private final AccountVerificationRepository accountVerificationRepository;
     private final IEmailService emailService;
-//    private final EmployeeRepository employeeRepository;
+    //    private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
