@@ -75,7 +75,19 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
             loginService.updateLoginAttempt(user.getUsername(), LoginType.LOGIN_SUCCESS);
             log.info("Login attempt updated for user: {}", user.getUsername());
 
-            ApiResponse apiResponse = new ApiResponse("Successful login", URI.create(""));
+            record UserResponse(
+                    String message,
+                    String department,
+                    String role
+            ) {
+            }
+
+            ApiResponse apiResponse = new ApiResponse("Successful login", new UserResponse(
+                    user.getUsername(),
+                    user.getDepartment().toString(),
+                    user.getRole().toString()
+            ));
+
             jwtService.addCookie(response, user, TokenType.ACCESS);
             jwtService.addCookie(response, user, TokenType.REFRESH);
             log.info("JWT cookies added for user: {}", user.getUsername());
