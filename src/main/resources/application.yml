@@ -2,20 +2,12 @@ spring:
   profiles:
     active: dev
   application:
-    name: vientos-del-sur
-#  datasource:
-#    driver-class-name: org.postgresql.Driver
-#    url: ${DB_URL}
-#    username: ${DB_USERNAME}
-#    password: ${DB_PASSWORD}
+    name: integracion
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password: password
-  h2:
-    console:
-      enabled: true
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     open-in-view: false
     show-sql: true
@@ -54,4 +46,3 @@ spring:
     jwt:
       secret-key: ${JWT_SECRET_KEY}
       expiration: ${JWT_EXPIRATION}
-    open-weather-api-key: ${OPEN_WEATHER_API_KEY}
