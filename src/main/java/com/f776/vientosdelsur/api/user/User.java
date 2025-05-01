@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,17 +52,16 @@ public class User implements UserDetails {
     @NotNull
     private Department department;
 
+    @NotNull
+    private String firstName;
+    @NotNull
+    private String lastName;
+
     private Boolean enabled;
     private Boolean accountNonLocked;
 
     private Integer loginAttempts;
     private LocalDateTime lastLogin;
-
-    // Parent
-    //    @OneToOne(mappedBy = "user")
-    //    @JsonManagedReference
-    //    @ToString.Exclude
-    //    private Employee employee;
 
     @OneToOne(mappedBy = "user")
     @JsonIgnore

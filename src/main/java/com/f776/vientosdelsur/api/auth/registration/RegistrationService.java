@@ -38,6 +38,9 @@ public class RegistrationService implements IRegistrationService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
+                .department(request.getDepartment())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
                 .enabled(false)
                 .accountNonLocked(true)
                 .loginAttempts(0)
@@ -51,6 +54,5 @@ public class RegistrationService implements IRegistrationService {
                 accountVerification.getVerificationToken());
 
         return URI.create("");
-//        return Constants.buildEmployeeURI.apply(employee.getId());
     }
 }

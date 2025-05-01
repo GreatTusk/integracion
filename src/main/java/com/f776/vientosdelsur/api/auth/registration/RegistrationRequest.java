@@ -1,5 +1,6 @@
 package com.f776.vientosdelsur.api.auth.registration;
 
+import com.f776.vientosdelsur.api.user.Department;
 import com.f776.vientosdelsur.api.user.Role;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,14 +25,8 @@ public class RegistrationRequest {
     private String email;
     @NotBlank
     private String password;
-    @NotBlank
-    private String phoneNumber;
     @NotNull
     private Role role;
-    private DayOfWeek dayOff;
-    @NotNull
-    private LocalDate entryDate;
-//    @Enumerated(EnumType.STRING)
-//    @NotNull
-//    private Occupation occupation;
+    @NotBlank
+    private Department department;
 }
