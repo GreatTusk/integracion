@@ -3,6 +3,8 @@ package com.f776.vientosdelsur.api.auth.registration;
 import com.f776.vientosdelsur.api.auth.verification.AccountVerification;
 import com.f776.vientosdelsur.api.auth.verification.AccountVerificationRepository;
 import com.f776.vientosdelsur.api.response.ResourceAlreadyExistsException;
+import com.f776.vientosdelsur.api.user.Department;
+import com.f776.vientosdelsur.api.user.Role;
 import com.f776.vientosdelsur.api.user.User;
 import com.f776.vientosdelsur.api.user.UserRepository;
 import com.f776.vientosdelsur.cache.CacheStore;
@@ -33,6 +35,8 @@ public class RegistrationService implements IRegistrationService {
             throw new ResourceAlreadyExistsException("Ya existe un usuario con este correo. Ingrese un correo válido.");
         }
 
+        validateRoleAndDepartmentConsistency(request.getRole(), request.getDepartment());
+
         User user = User
                 .builder()
                 .email(request.getEmail())
@@ -54,5 +58,16 @@ public class RegistrationService implements IRegistrationService {
                 accountVerification.getVerificationToken());
 
         return URI.create("");
+    }
+
+    private void validateRoleAndDepartmentConsistency(Role role, Department department) {
+        String roleName = role.name();
+        String departmentName = department.name();
+
+        // Check if role belongs to the specified department
+        if (!roleName.contains(departmentName)) {
+            throw new IllegalArgumentException(
+                    String.format("El rol %s no pertenece al departamento %s", role, department));
+        }
     }
 }
