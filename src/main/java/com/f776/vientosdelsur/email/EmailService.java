@@ -50,7 +50,7 @@ public class EmailService implements IEmailService {
             MimeMessage message = getMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
 
-            helper.setSubject("Confimación de nueva cuenta en Vientos del Sur ");
+            helper.setSubject("Confimación de nueva cuenta en Integración de Plataformas");
             helper.setFrom(fromEmail);
             helper.setTo(to);
 

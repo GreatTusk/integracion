@@ -27,6 +27,6 @@ public class RegistrationRequest {
     private String password;
     @NotNull
     private Role role;
-    @NotBlank
+    @NotNull
     private Department department;
 }

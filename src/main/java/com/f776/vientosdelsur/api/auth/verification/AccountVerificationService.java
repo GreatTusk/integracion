@@ -3,11 +3,14 @@ package com.f776.vientosdelsur.api.auth.verification;
 import com.f776.vientosdelsur.api.response.NoContentException;
 import com.f776.vientosdelsur.api.user.User;
 import com.f776.vientosdelsur.api.user.UserRepository;
+import com.f776.vientosdelsur.utils.Utils;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -31,10 +34,8 @@ public class AccountVerificationService implements IAccountVerificationService {
 
         accountVerificationRepository.delete(accountVerification);
 
-//        Employee employee = userDetails.getEmployee();
-//
-//        context.setVariables(Map.of("nombre", Utils.initCap(employee.getFirstName() + " " + employee.getLastName()),
-//                "email", userDetails.getEmail()));
+        context.setVariables(Map.of("nombre", Utils.initCap(userDetails.getFirstName() + " " + userDetails.getLastName()),
+                "email", userDetails.getEmail()));
 
         return templateEngine.process("email-verificado", context);
     }

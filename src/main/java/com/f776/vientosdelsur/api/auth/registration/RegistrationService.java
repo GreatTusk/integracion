@@ -50,7 +50,8 @@ public class RegistrationService implements IRegistrationService {
                 .loginAttempts(0)
                 .build();
 
-        AccountVerification accountVerification = new AccountVerification(user);
+        var savedUser = userRepository.save(user);
+        AccountVerification accountVerification = new AccountVerification(savedUser);
         accountVerificationRepository.save(accountVerification);
 
         emailService.sendVerificationEmail(Utils.initCap(request.getFirstName() + " " + request.getLastName()),
