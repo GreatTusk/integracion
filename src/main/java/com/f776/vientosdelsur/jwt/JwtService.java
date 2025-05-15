@@ -9,12 +9,10 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.TriConsumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -36,6 +33,8 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtService implements IJwtService {
+
+    private static final String BEARER_PREFIX = "Bearer ";
 
     @Value("${spring.keys.jwt.secret-key}")
     private String secretKey;
@@ -54,25 +53,12 @@ public class JwtService implements IJwtService {
             .parseSignedClaims(token)
             .getPayload();
 
-    private final BiFunction<HttpServletRequest, String, Optional<String>> extractToken = (request, cookieName) -> {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
+    private final BiFunction<HttpServletRequest, String, Optional<String>> extractBearerToken = (request, tokenType) -> {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
             return Optional.empty();
         }
-        return Arrays.stream(cookies)
-                .filter(cookie -> Objects.equals(cookie.getName(), cookieName))
-                .map(Cookie::getValue)
-                .findAny();
-    };
-
-    private final BiFunction<HttpServletRequest, String, Optional<Cookie>> extractCookie = (request, cookieName) -> {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return Optional.empty();
-        }
-        return Arrays.stream(cookies)
-                .filter(cookie -> Objects.equals(cookie.getName(), cookieName))
-                .findAny();
+        return Optional.of(authHeader.substring(BEARER_PREFIX.length()));
     };
 
     private final Supplier<JwtBuilder> builder = () ->
@@ -95,34 +81,8 @@ public class JwtService implements IJwtService {
                             .compact() :
                     builder.get()
                             .subject(user.getUsername())
-                            .expiration(Date.from(Instant.now().plusSeconds(expiration)))
+                            .expiration(Date.from(Instant.now().plusSeconds(expiration * 12))) // Refresh token lives longer
                             .compact();
-
-    private final TriConsumer<HttpServletResponse, UserDetails, TokenType> addCookie = (httpServletResponse, user, tokenType) -> {
-
-        switch (tokenType) {
-            case ACCESS -> {
-                String accessToken = generateToken(user, Token::getAccess);
-                Cookie cookie = new Cookie(tokenType.getValue(), accessToken);
-                cookie.setHttpOnly(true);
-//                cookie.setSecure(true);
-                cookie.setMaxAge(2 * 60);
-                cookie.setPath("/");
-                cookie.setAttribute("SameSite", org.springframework.boot.web.server.Cookie.SameSite.NONE.name());
-                httpServletResponse.addCookie(cookie);
-            }
-            case REFRESH -> {
-                String refresh = generateToken(user, Token::getRefresh);
-                Cookie cookie = new Cookie(tokenType.getValue(), refresh);
-                cookie.setHttpOnly(true);
-//                cookie.setSecure(true);
-                cookie.setMaxAge(2 * 60 * 60);
-                cookie.setPath("/");
-                cookie.setAttribute("SameSite", org.springframework.boot.web.server.Cookie.SameSite.NONE.name());
-                httpServletResponse.addCookie(cookie);
-            }
-        }
-    };
 
     public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
@@ -152,13 +112,16 @@ public class JwtService implements IJwtService {
     }
 
     @Override
-    public Optional<String> extractToken(HttpServletRequest request, TokenType tokenType) {
-        return extractToken.apply(request, tokenType.getValue());
+    public Token generateTokenPair(UserDetails userDetails) {
+        return Token.builder()
+                .access(buildToken.apply(userDetails, TokenType.ACCESS))
+                .refresh(buildToken.apply(userDetails, TokenType.REFRESH))
+                .build();
     }
 
     @Override
-    public void addCookie(HttpServletResponse response, UserDetails userDetails, TokenType tokenType) {
-        addCookie.accept(response, userDetails, tokenType);
+    public Optional<String> extractToken(HttpServletRequest request, TokenType tokenType) {
+        return extractBearerToken.apply(request, tokenType.getValue());
     }
 
     @Override
@@ -171,14 +134,5 @@ public class JwtService implements IJwtService {
                         .user(userDetails)
                         .build()
         );
-    }
-
-    @Override
-    public void removeCookie(HttpServletRequest request, HttpServletResponse response, String cookieName) {
-        extractCookie.apply(request, cookieName)
-                .ifPresent(cookie -> {
-                    cookie.setMaxAge(0);
-                    response.addCookie(cookie);
-                });
     }
 }

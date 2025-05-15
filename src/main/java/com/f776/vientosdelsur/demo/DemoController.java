@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class DemoController {
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_VENTAS_ADMIN')")
     @GetMapping("/admin")
     public ResponseEntity<String> sayHelloToAdmin() {
         String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();

@@ -4,6 +4,7 @@ import com.f776.vientosdelsur.api.response.ApiResponse;
 import com.f776.vientosdelsur.api.response.ResponseBuilder;
 import com.f776.vientosdelsur.api.user.User;
 import com.f776.vientosdelsur.jwt.IJwtService;
+import com.f776.vientosdelsur.jwt.token.Token;
 import com.f776.vientosdelsur.jwt.token.TokenType;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -73,22 +74,27 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
             loginService.updateLoginAttempt(user.getUsername(), LoginType.LOGIN_SUCCESS);
             log.info("Login attempt updated for user: {}", user.getUsername());
 
-            record UserResponse(
+            // Generate tokens
+            Token tokens = jwtService.generateTokenPair(user);
+
+            record AuthResponse(
                     String message,
                     String department,
-                    String role
+                    String role,
+                    String accessToken,
+                    String refreshToken
             ) {
             }
 
-            ApiResponse apiResponse = new ApiResponse("Successful login", new UserResponse(
+            ApiResponse apiResponse = new ApiResponse("Successful login", new AuthResponse(
                     user.getUsername(),
                     user.getDepartment().toString(),
-                    user.getRole().toString()
+                    user.getRole().toString(),
+                    tokens.getAccess(),
+                    tokens.getRefresh()
             ));
 
-            jwtService.addCookie(response, user, TokenType.ACCESS);
-            jwtService.addCookie(response, user, TokenType.REFRESH);
-            log.info("JWT cookies added for user: {}", user.getUsername());
+            log.info("JWT tokens generated for user: {}", user.getUsername());
 
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setStatus(HttpStatus.OK.value());

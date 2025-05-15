@@ -15,13 +15,11 @@ public interface IJwtService {
 
     Optional<String> extractToken(HttpServletRequest request, TokenType tokenType);
 
-    void addCookie(HttpServletResponse response, UserDetails userDetails, TokenType tokenType);
-
     String extractUserEmail(String token);
 
     boolean isTokenExpired(String token);
 
     <T> T getTokenData(String token, Function<TokenData, T> tokenFunc);
-
-    void removeCookie(HttpServletRequest request, HttpServletResponse response, String cookieName);
+    
+    Token generateTokenPair(UserDetails userDetails);
 }
