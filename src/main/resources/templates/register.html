@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Integración de Plataformas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+            padding-top: 40px;
+        }
+
+        .auth-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+
+        .auth-icon {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            width: 100%;
+            padding: 12px;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="auth-container">
+        <div class="auth-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                 stroke="#6c757d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="14" x="2" y="3" rx="2"></rect>
+                <line x1="8" x2="16" y1="21" y2="21"></line>
+                <line x1="12" x2="12" y1="17" y2="21"></line>
+            </svg>
+        </div>
+
+        <h1 class="text-center mb-4" style="color: #6c757d;">Crear Cuenta</h1>
+
+        <div th:if="${param.error}" class="alert alert-danger">
+            <span th:text="${param.error}">Mensaje de error</span>
+        </div>
+
+        <form th:action="@{/api/v1/auth/register}" method="post">
+            <div class="form-group">
+                <label for="firstName">Nombre</label>
+                <input type="text" class="form-control" id="firstName" name="firstName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="lastName">Apellido</label>
+                <input type="text" class="form-control" id="lastName" name="lastName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Correo Electrónico</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirmar Contraseña</label>
+                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+            </div>
+
+            <div class="form-group">
+                <label for="department">Departamento</label>
+                <select class="form-control" id="department" name="department" required>
+                    <option value="">Seleccionar Departamento</option>
+                    <option value="VENTAS">Ventas</option>
+                    <option value="PROVEEDOR">Proveedor</option>
+                    <option value="POST_VENTA">Post Venta</option>
+                    <option value="CONTABILIDAD">Contabilidad</option>
+                    <option value="DESPACHO">Despacho</option>
+                    <option value="ADQUISICION">Adquisición</option>
+                    <option value="STOCK">Stock</option>
+                    <option value="REPORTERIA">Reportería</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="role">Rol</label>
+                <select class="form-control" id="role" name="role" required>
+                    <option value="">Seleccionar Rol</option>
+                    <option value="ROLE_VENTAS_ADMIN">Ventas - Administrador</option>
+                    <option value="ROLE_VENTAS_USER">Ventas - Usuario</option>
+                    <option value="ROLE_PROVEEDOR_ADMIN">Proveedor - Administrador</option>
+                    <option value="ROLE_PROVEEDOR_ADQUISICION">Proveedor - Adquisición</option>
+                    <option value="ROLE_PROVEEDOR_USER">Proveedor - Usuario</option>
+                    <option value="ROLE_POST_VENTA_USER">Post Venta - Usuario</option>
+                    <option value="ROLE_POST_VENTA_ADMIN">Post Venta - Administrador</option>
+                    <option value="ROLE_CONTABILIDAD_ADMIN">Contabilidad - Administrador</option>
+                    <option value="ROLE_CONTABILIDAD_USER">Contabilidad - Usuario</option>
+                    <option value="ROLE_DESPACHO_ADMIN">Despacho - Administrador</option>
+                    <option value="ROLE_DESPACHO_USER">Despacho - Usuario</option>
+                    <option value="ROLE_ADQUISICION_ADMIN">Adquisición - Administrador</option>
+                    <option value="ROLE_ADQUISICION_USER">Adquisición - Usuario</option>
+                    <option value="ROLE_STOCK_ADMIN">Stock - Administrador</option>
+                    <option value="ROLE_STOCK_USER">Stock - Usuario</option>
+                    <option value="ROLE_REPORTERIA_ADMIN">Reportería - Administrador</option>
+                    <option value="ROLE_REPORTERIA_USER">Reportería - Usuario</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Registrar</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>¿Ya tienes una cuenta? <a th:href="@{/auth/login}">Inicia sesión aquí</a></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

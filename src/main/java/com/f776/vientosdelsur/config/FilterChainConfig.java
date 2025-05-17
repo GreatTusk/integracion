@@ -39,7 +39,7 @@ public class FilterChainConfig {
                         .requestMatchers("/api/v1/auth/**", "/verify/**", "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/api-docs/**",
-                                "/v3/api-docs/**")
+                                "/v3/api-docs/**", "/auth/login", "/auth/register", "/auth/success")
                         .permitAll()
                         .anyRequest()
                         .authenticated()
