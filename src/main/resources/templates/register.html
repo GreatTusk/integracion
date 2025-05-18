@@ -94,43 +94,47 @@
             </div>
 
             <div class="form-group">
-                <label for="department">Departamento</label>
-                <select class="form-control" id="department" name="department" required>
-                    <option value="">Seleccionar Departamento</option>
-                    <option value="VENTAS">Ventas</option>
-                    <option value="PROVEEDOR">Proveedor</option>
-                    <option value="POST_VENTA">Post Venta</option>
-                    <option value="CONTABILIDAD">Contabilidad</option>
-                    <option value="DESPACHO">Despacho</option>
-                    <option value="ADQUISICION">Adquisición</option>
-                    <option value="STOCK">Stock</option>
-                    <option value="REPORTERIA">Reportería</option>
-                </select>
-            </div>
-
-            <div class="form-group">
                 <label for="role">Rol</label>
                 <select class="form-control" id="role" name="role" required>
                     <option value="">Seleccionar Rol</option>
-                    <option value="ROLE_VENTAS_ADMIN">Ventas - Administrador</option>
-                    <option value="ROLE_VENTAS_USER">Ventas - Usuario</option>
-                    <option value="ROLE_PROVEEDOR_ADMIN">Proveedor - Administrador</option>
-                    <option value="ROLE_PROVEEDOR_ADQUISICION">Proveedor - Adquisición</option>
-                    <option value="ROLE_PROVEEDOR_USER">Proveedor - Usuario</option>
-                    <option value="ROLE_POST_VENTA_USER">Post Venta - Usuario</option>
-                    <option value="ROLE_POST_VENTA_ADMIN">Post Venta - Administrador</option>
-                    <option value="ROLE_CONTABILIDAD_ADMIN">Contabilidad - Administrador</option>
-                    <option value="ROLE_CONTABILIDAD_USER">Contabilidad - Usuario</option>
-                    <option value="ROLE_DESPACHO_ADMIN">Despacho - Administrador</option>
-                    <option value="ROLE_DESPACHO_USER">Despacho - Usuario</option>
-                    <option value="ROLE_ADQUISICION_ADMIN">Adquisición - Administrador</option>
-                    <option value="ROLE_ADQUISICION_USER">Adquisición - Usuario</option>
-                    <option value="ROLE_STOCK_ADMIN">Stock - Administrador</option>
-                    <option value="ROLE_STOCK_USER">Stock - Usuario</option>
-                    <option value="ROLE_REPORTERIA_ADMIN">Reportería - Administrador</option>
-                    <option value="ROLE_REPORTERIA_USER">Reportería - Usuario</option>
+                    <optgroup label="Ventas">
+                        <option value="ROLE_VENTAS_ADMIN">Administrador</option>
+                        <option value="ROLE_VENTAS_USER">Usuario</option>
+                    </optgroup>
+                    <optgroup label="Proveedor">
+                        <option value="ROLE_PROVEEDOR_ADMIN">Administrador</option>
+                        <option value="ROLE_PROVEEDOR_ADQUISICION">Adquisición</option>
+                        <option value="ROLE_PROVEEDOR_USER">Usuario</option>
+                    </optgroup>
+                    <optgroup label="Post Venta">
+                        <option value="ROLE_POST_VENTA_ADMIN">Administrador</option>
+                        <option value="ROLE_POST_VENTA_USER">Usuario</option>
+                    </optgroup>
+                    <optgroup label="Contabilidad">
+                        <option value="ROLE_CONTABILIDAD_ADMIN">Administrador</option>
+                        <option value="ROLE_CONTABILIDAD_USER">Usuario</option>
+                    </optgroup>
+                    <optgroup label="Despacho">
+                        <option value="ROLE_DESPACHO_ADMIN">Administrador</option>
+                        <option value="ROLE_DESPACHO_USER">Usuario</option>
+                    </optgroup>
+                    <optgroup label="Adquisición">
+                        <option value="ROLE_ADQUISICION_ADMIN">Administrador</option>
+                        <option value="ROLE_ADQUISICION_USER">Usuario</option>
+                    </optgroup>
+                    <optgroup label="Stock">
+                        <option value="ROLE_STOCK_ADMIN">Administrador</option>
+                        <option value="ROLE_STOCK_USER">Usuario</option>
+                    </optgroup>
+                    <optgroup label="Reportería">
+                        <option value="ROLE_REPORTERIA_ADMIN">Administrador</option>
+                        <option value="ROLE_REPORTERIA_USER">Usuario</option>
+                    </optgroup>
                 </select>
             </div>
+
+            <!-- Hidden department field that will be set via JavaScript -->
+            <input type="hidden" id="department" name="department" value="">
 
             <button type="submit" class="btn btn-primary">Registrar</button>
         </form>
@@ -140,5 +144,39 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('role').addEventListener('change', function () {
+        const role = this.value;
+        let department = '';
+
+        if (role.includes('VENTAS')) {
+            department = 'VENTAS';
+        } else if (role.includes('PROVEEDOR')) {
+            department = 'PROVEEDOR';
+        } else if (role.includes('POST_VENTA')) {
+            department = 'POST_VENTA';
+        } else if (role.includes('CONTABILIDAD')) {
+            department = 'CONTABILIDAD';
+        } else if (role.includes('DESPACHO')) {
+            department = 'DESPACHO';
+        } else if (role.includes('ADQUISICION')) {
+            department = 'ADQUISICION';
+        } else if (role.includes('STOCK')) {
+            department = 'STOCK';
+        } else if (role.includes('REPORTERIA')) {
+            department = 'REPORTERIA';
+        }
+
+        document.getElementById('department').value = department;
+    });
+
+    document.querySelector('form').addEventListener('submit', function (event) {
+        if (!document.getElementById('department').value) {
+            event.preventDefault();
+            alert('Por favor selecciona un rol para continuar');
+        }
+    });
+</script>
 </body>
 </html>

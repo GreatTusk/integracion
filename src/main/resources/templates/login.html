@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,13 +55,13 @@
                 </svg>
             </div>
 
-            <h1 class="text-center mb-4" style="color: #6c757d;">Login</h1>
+            <h1 class="text-center mb-4" style="color: #6c757d;">Inicia sesión</h1>
 
             <div th:if="${param.error}" class="alert alert-danger">
                 Usuario o contraseña incorrectos.
             </div>
 
-            <form th:action="@{/api/v1/auth/login}" method="post">
+            <form id="loginForm">
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" class="form-control" id="email" name="email" required>
@@ -76,9 +76,37 @@
             </form>
 
             <div class="auth-footer">
-                <p>Don't have an account? <a th:href="@{/auth/register}">Registrarse</a></p>
+                <p>¿No tienes una cuenta? <a th:href="@{/auth/register}">Registrarse</a></p>
             </div>
         </div>
     </div>
 </body>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            const response = await fetch('/api/v1/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (response.ok) {
+
+            } else {
+                alert('Usuario o contraseña incorrectos.');
+            }
+        } catch (error) {
+            console.error('Error al enviar la solicitud:', error);
+            alert('Ocurrió un error al intentar iniciar sesión.');
+        }
+    });
+</script>
+
 </html>

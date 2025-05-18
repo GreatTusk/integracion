@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración de Ventas</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header svg {
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #6c757d;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .welcome-message {
+            background-color: #e9ecef;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .welcome-message p {
+            color: #343a40;
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .role-badge {
+            display: inline-block;
+            background-color: #6c757d;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #6c757d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+             stroke="#6c757d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <h1>Panel de Administración de Ventas</h1>
+    </div>
+
+    <div class="welcome-message">
+        <p>¡Hola <span th:text="${username}">Usuario</span>!</p>
+        <p>Bienvenido al panel de administración de ventas. Has iniciado sesión correctamente y tienes acceso a las
+            funciones administrativas del sistema.</p>
+        <p>Tu rol actual es: <span class="role-badge">Administrador de Ventas</span></p>
+    </div>
+
+    <div class="footer">
+        <p>Sistema de Integración &copy; 2025</p>
+    </div>
+</div>
+</body>
+</html>
